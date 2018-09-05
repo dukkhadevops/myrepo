@@ -1,0 +1,1 @@
+get-content c:\scripts\reboots\computers.txt | ForEach-Object { gwmi win32_operatingsystem -ComputerName $_  | ForEach-Object { $_.reboot() }}
