@@ -1,0 +1,404 @@
+2018/07/24 12:05:47 -- cbcdv-app01t -- Test connection to cbcdv-app01t SUCCESS
+2018/07/24 12:05:48 -- cbcdv-app01t -- cert copies failed. trycounter = 0
+2018/07/24 12:05:53 -- cbcdv-app01t -- cert copies okay
+2018/07/24 12:05:53 -- cbcdv-app01t -- successfully renamed certs in c:\app\certs\
+2018/07/24 12:05:54 -- cbcdv-app01t -- solo cert import okay
+2018/07/24 12:05:55 -- cbcdv-app01t -- ROOT cert imports okay
+2018/07/24 12:05:55 -- cbcdv-app01t -- INTERMEDIATE cert imports okay
+2018/07/24 12:05:57 -- cbcdv-app01t -- Certificate Private Key Permissions set on cbcdv-app01t
+2018/07/24 12:05:57 -- cbcdv-app01t -- c:\temp\certs cleanup success
+2018/07/24 12:06:12 -- cbcdv-web01t -- Test connection to cbcdv-web01t SUCCESS
+2018/07/24 12:06:14 -- cbcdv-web01t -- cert copies failed. trycounter = 0
+2018/07/24 12:06:19 -- cbcdv-web01t -- cert copies okay
+2018/07/24 12:06:19 -- cbcdv-web01t -- successfully renamed certs in c:\app\certs\
+2018/07/24 12:06:20 -- cbcdv-web01t -- solo cert import okay
+2018/07/24 12:06:21 -- cbcdv-web01t -- ROOT cert imports okay
+2018/07/24 12:06:22 -- cbcdv-web01t -- INTERMEDIATE cert imports okay
+2018/07/24 12:06:24 -- cbcdv-web01t -- Certificate Private Key Permissions set on cbcdv-web01t
+2018/07/24 12:06:25 -- cbcdv-web01t -- c:\temp\certs cleanup success
+2018/07/24 12:06:40 -- cbcdv-web02t -- Test connection to cbcdv-web02t SUCCESS
+2018/07/24 12:06:42 -- cbcdv-web02t -- cert copies failed. trycounter = 0
+2018/07/24 12:06:47 -- cbcdv-web02t -- cert copies okay
+2018/07/24 12:06:47 -- cbcdv-web02t -- successfully renamed certs in c:\app\certs\
+2018/07/24 12:06:48 -- cbcdv-web02t -- solo cert import okay
+2018/07/24 12:06:49 -- cbcdv-web02t -- ROOT cert imports okay
+2018/07/24 12:06:51 -- cbcdv-web02t -- INTERMEDIATE cert imports okay
+2018/07/24 12:06:54 -- cbcdv-web02t -- Certificate Private Key Permissions set on cbcdv-web02t
+2018/07/24 12:06:55 -- cbcdv-web02t -- c:\temp\certs cleanup success
+2018/07/24 12:07:10 -- dvinapi01uwad -- Test connection to dvinapi01uwad SUCCESS
+2018/07/24 12:07:10 -- dvinapi01uwad -- cert copies okay
+2018/07/24 12:07:11 -- dvinapi01uwad -- solo cert import okay
+2018/07/24 12:07:12 -- dvinapi01uwad -- ROOT cert imports okay
+2018/07/24 12:07:13 -- dvinapi01uwad -- INTERMEDIATE cert imports okay
+2018/07/24 12:07:16 -- dvinapi01uwad -- Certificate Private Key Permissions set on dvinapi01uwad
+2018/07/24 12:07:17 -- dvinapi01uwad -- c:\temp\certs cleanup success
+2018/07/24 12:30:28 -- dvapp01uwaq -- Test connection to dvapp01uwaq SUCCESS
+2018/07/24 12:30:34 -- dvapp01uwaq -- cert copies okay
+2018/07/24 12:30:34 -- dvapp01uwaq -- successfully renamed certs in c:\app\certs\
+2018/07/24 12:30:39 -- dvapp01uwaq -- solo cert import okay
+2018/07/24 12:30:44 -- dvapp01uwaq -- ROOT cert imports okay
+2018/07/24 12:30:50 -- dvapp01uwaq -- INTERMEDIATE cert imports okay
+2018/07/24 12:31:01 -- dvapp01uwaq -- Certificate Private Key Permissions set on dvapp01uwaq
+2018/07/24 12:31:06 -- dvapp01uwaq -- c:\temp\certs cleanup success
+2018/07/24 12:31:21 -- dvweb01uwwq -- Test connection to dvweb01uwwq SUCCESS
+2018/07/24 12:31:22 -- dvweb01uwwq -- cert copies failed. trycounter = 0
+2018/07/24 12:31:27 -- dvweb01uwwq -- cert copies okay
+2018/07/24 12:31:27 -- dvweb01uwwq -- successfully renamed certs in c:\app\certs\
+2018/07/24 12:31:29 -- dvweb01uwwq -- solo cert import okay
+2018/07/24 12:31:30 -- dvweb01uwwq -- ROOT cert imports okay
+2018/07/24 12:31:31 -- dvweb01uwwq -- INTERMEDIATE cert imports okay
+2018/07/24 12:31:34 -- dvweb01uwwq -- Certificate Private Key Permissions set on dvweb01uwwq
+2018/07/24 12:31:35 -- dvweb01uwwq -- c:\temp\certs cleanup success
+2018/07/24 12:31:50 -- dvinapi01uwaq -- Test connection to dvinapi01uwaq SUCCESS
+2018/07/24 12:31:51 -- dvinapi01uwaq -- cert copies failed. trycounter = 0
+2018/07/24 12:31:56 -- dvinapi01uwaq -- cert copies okay
+2018/07/24 12:31:57 -- dvinapi01uwaq -- solo cert import okay
+2018/07/24 12:31:57 -- dvinapi01uwaq -- ROOT cert imports okay
+2018/07/24 12:31:58 -- dvinapi01uwaq -- INTERMEDIATE cert imports okay
+2018/07/24 12:32:00 -- dvinapi01uwaq -- Certificate Private Key Permissions set on dvinapi01uwaq
+2018/07/24 12:32:00 -- dvinapi01uwaq -- c:\temp\certs cleanup success
+2018/07/24 12:55:45 -- dvapp01uwaq -- Test connection to dvapp01uwaq SUCCESS
+2018/07/24 12:55:51 -- dvapp01uwaq -- cert copies okay
+2018/07/24 12:55:51 -- dvapp01uwaq -- successfully renamed certs in c:\app\certs\
+2018/07/24 12:55:56 -- dvapp01uwaq -- solo cert import okay
+2018/07/24 12:56:01 -- dvapp01uwaq -- ROOT cert imports okay
+2018/07/24 12:56:06 -- dvapp01uwaq -- INTERMEDIATE cert imports okay
+2018/07/24 12:56:23 -- dvapp01uwaq -- Certificate Private Key Permissions set on dvapp01uwaq
+2018/07/24 12:56:28 -- dvapp01uwaq -- c:\temp\certs cleanup success
+2018/07/24 12:56:43 -- dvweb01uwwq -- Test connection to dvweb01uwwq SUCCESS
+2018/07/24 12:56:45 -- dvweb01uwwq -- cert copies failed. trycounter = 0
+2018/07/24 12:56:50 -- dvweb01uwwq -- cert copies okay
+2018/07/24 12:56:50 -- dvweb01uwwq -- successfully renamed certs in c:\app\certs\
+2018/07/24 12:56:51 -- dvweb01uwwq -- solo cert import okay
+2018/07/24 12:56:52 -- dvweb01uwwq -- ROOT cert imports okay
+2018/07/24 12:56:53 -- dvweb01uwwq -- INTERMEDIATE cert imports okay
+2018/07/24 12:56:58 -- dvweb01uwwq -- Certificate Private Key Permissions set on dvweb01uwwq
+2018/07/24 12:56:59 -- dvweb01uwwq -- c:\temp\certs cleanup success
+2018/07/24 12:57:14 -- dvinapi01uwaq -- Test connection to dvinapi01uwaq SUCCESS
+2018/07/24 12:57:16 -- dvinapi01uwaq -- cert copies failed. trycounter = 0
+2018/07/24 12:57:21 -- dvinapi01uwaq -- cert copies okay
+2018/07/24 12:57:21 -- dvinapi01uwaq -- solo cert import okay
+2018/07/24 12:57:22 -- dvinapi01uwaq -- ROOT cert imports okay
+2018/07/24 12:57:23 -- dvinapi01uwaq -- INTERMEDIATE cert imports okay
+2018/07/24 12:57:25 -- dvinapi01uwaq -- Certificate Private Key Permissions set on dvinapi01uwaq
+2018/07/24 12:57:25 -- dvinapi01uwaq -- c:\temp\certs cleanup success
+2018/07/24 14:15:35 -- dvapp01uwaq -- Test connection to dvapp01uwaq SUCCESS
+2018/07/24 14:15:41 -- dvapp01uwaq -- cert copies okay
+2018/07/24 14:15:41 -- dvapp01uwaq -- successfully renamed certs in c:\app\certs\
+2018/07/24 14:15:46 -- dvapp01uwaq -- solo cert import okay
+2018/07/24 14:15:51 -- dvapp01uwaq -- ROOT cert imports okay
+2018/07/24 14:15:57 -- dvapp01uwaq -- INTERMEDIATE cert imports okay
+2018/07/24 14:16:14 -- dvapp01uwaq -- Certificate Private Key Permissions set on dvapp01uwaq
+2018/07/24 14:16:18 -- dvapp01uwaq -- c:\temp\certs cleanup success
+2018/07/24 14:16:33 -- dvweb01uwwq -- Test connection to dvweb01uwwq SUCCESS
+2018/07/24 14:16:35 -- dvweb01uwwq -- cert copies failed. trycounter = 0
+2018/07/24 14:16:40 -- dvweb01uwwq -- cert copies okay
+2018/07/24 14:16:40 -- dvweb01uwwq -- successfully renamed certs in c:\app\certs\
+2018/07/24 14:16:41 -- dvweb01uwwq -- solo cert import okay
+2018/07/24 14:16:42 -- dvweb01uwwq -- ROOT cert imports okay
+2018/07/24 14:16:44 -- dvweb01uwwq -- INTERMEDIATE cert imports okay
+2018/07/24 14:16:49 -- dvweb01uwwq -- Certificate Private Key Permissions set on dvweb01uwwq
+2018/07/24 14:16:50 -- dvweb01uwwq -- c:\temp\certs cleanup success
+2018/07/24 14:17:05 -- dvgw01uwwq -- Test connection to dvgw01uwwq SUCCESS
+2018/07/24 14:17:06 -- dvgw01uwwq -- cert copies failed. trycounter = 0
+2018/07/24 14:17:11 -- dvgw01uwwq -- cert copies okay
+2018/07/24 14:17:11 -- dvgw01uwwq -- successfully renamed certs in c:\app\certs\
+2018/07/24 14:17:12 -- dvgw01uwwq -- solo cert import okay
+2018/07/24 14:17:13 -- dvgw01uwwq -- ROOT cert imports okay
+2018/07/24 14:17:14 -- dvgw01uwwq -- INTERMEDIATE cert imports okay
+2018/07/24 14:17:18 -- dvgw01uwwq -- Certificate Private Key Permissions set on dvgw01uwwq
+2018/07/24 14:17:19 -- dvgw01uwwq -- c:\temp\certs cleanup success
+2018/07/24 14:17:34 -- dvinet01uwwq -- Test connection to dvinet01uwwq SUCCESS
+2018/07/24 14:17:44 -- dvinet01uwwq -- cert copies okay
+2018/07/24 14:17:44 -- dvinet01uwwq -- successfully renamed certs in c:\app\certs\
+2018/07/24 14:17:52 -- dvinet01uwwq -- solo cert import okay
+2018/07/24 14:18:01 -- dvinet01uwwq -- ROOT cert imports okay
+2018/07/24 14:18:09 -- dvinet01uwwq -- INTERMEDIATE cert imports okay
+2018/07/24 14:18:37 -- dvinet01uwwq -- Certificate Private Key Permissions set on dvinet01uwwq
+2018/07/24 14:18:45 -- dvinet01uwwq -- c:\temp\certs cleanup success
+2018/07/24 14:19:00 -- dvpdf01uwaq -- Test connection to dvpdf01uwaq SUCCESS
+2018/07/24 14:19:01 -- dvpdf01uwaq -- cert copies failed. trycounter = 0
+2018/07/24 14:19:06 -- dvpdf01uwaq -- cert copies okay
+2018/07/24 14:19:06 -- dvpdf01uwaq -- successfully renamed certs in c:\app\certs\
+2018/07/24 14:19:07 -- dvpdf01uwaq -- solo cert import okay
+2018/07/24 14:19:07 -- dvpdf01uwaq -- ROOT cert imports okay
+2018/07/24 14:19:08 -- dvpdf01uwaq -- INTERMEDIATE cert imports okay
+2018/07/24 14:19:10 -- dvpdf01uwaq -- Certificate Private Key Permissions set on dvpdf01uwaq
+2018/07/24 14:19:10 -- dvpdf01uwaq -- c:\temp\certs cleanup success
+2018/07/24 14:19:25 -- dvinapi01uwaq -- Test connection to dvinapi01uwaq SUCCESS
+2018/07/24 14:19:27 -- dvinapi01uwaq -- cert copies failed. trycounter = 0
+2018/07/24 14:19:32 -- dvinapi01uwaq -- cert copies okay
+2018/07/24 14:19:32 -- dvinapi01uwaq -- solo cert import okay
+2018/07/24 14:19:33 -- dvinapi01uwaq -- ROOT cert imports okay
+2018/07/24 14:19:34 -- dvinapi01uwaq -- INTERMEDIATE cert imports okay
+2018/07/24 14:19:36 -- dvinapi01uwaq -- Certificate Private Key Permissions set on dvinapi01uwaq
+2018/07/24 14:19:37 -- dvinapi01uwaq -- c:\temp\certs cleanup success
+2018/07/25 11:48:50 -- cbcdv-app01q -- Test connection to cbcdv-app01q SUCCESS
+2018/07/25 11:48:51 -- cbcdv-app01q -- cert copies failed. trycounter = 0
+2018/07/25 11:48:56 -- cbcdv-app01q -- cert copies okay
+2018/07/25 11:48:56 -- cbcdv-app01q -- successfully renamed certs in c:\app\certs\
+2018/07/25 11:48:57 -- cbcdv-app01q -- solo cert import okay
+2018/07/25 11:48:57 -- cbcdv-app01q -- ROOT cert imports okay
+2018/07/25 11:48:58 -- cbcdv-app01q -- INTERMEDIATE cert imports okay
+2018/07/25 11:49:00 -- cbcdv-app01q -- Certificate Private Key Permissions set on cbcdv-app01q
+2018/07/25 11:49:01 -- cbcdv-app01q -- c:\temp\certs cleanup success
+2018/07/25 11:49:16 -- cbcdv-app02q -- Test connection to cbcdv-app02q SUCCESS
+2018/07/25 11:49:17 -- cbcdv-app02q -- cert copies failed. trycounter = 0
+2018/07/25 11:49:22 -- cbcdv-app02q -- cert copies okay
+2018/07/25 11:49:22 -- cbcdv-app02q -- successfully renamed certs in c:\app\certs\
+2018/07/25 11:49:23 -- cbcdv-app02q -- solo cert import okay
+2018/07/25 11:49:23 -- cbcdv-app02q -- ROOT cert imports okay
+2018/07/25 11:49:24 -- cbcdv-app02q -- INTERMEDIATE cert imports okay
+2018/07/25 11:49:26 -- cbcdv-app02q -- Certificate Private Key Permissions set on cbcdv-app02q
+2018/07/25 11:49:27 -- cbcdv-app02q -- c:\temp\certs cleanup success
+2018/07/25 11:49:42 -- cbcdv-inet01q -- Test connection to cbcdv-inet01q SUCCESS
+2018/07/25 11:49:43 -- cbcdv-inet01q -- cert copies failed. trycounter = 0
+2018/07/25 11:49:48 -- cbcdv-inet01q -- cert copies okay
+2018/07/25 11:49:48 -- cbcdv-inet01q -- successfully renamed certs in c:\app\certs\
+2018/07/25 11:49:50 -- cbcdv-inet01q -- solo cert import okay
+2018/07/25 11:49:51 -- cbcdv-inet01q -- ROOT cert imports okay
+2018/07/25 11:49:52 -- cbcdv-inet01q -- INTERMEDIATE cert imports okay
+2018/07/25 11:49:59 -- cbcdv-inet01q -- Certificate Private Key Permissions set on cbcdv-inet01q
+2018/07/25 11:50:00 -- cbcdv-inet01q -- c:\temp\certs cleanup success
+2018/07/25 11:50:15 -- cbcdv-pdfgen01q -- Test connection to cbcdv-pdfgen01q SUCCESS
+2018/07/25 11:50:16 -- cbcdv-pdfgen01q -- cert copies failed. trycounter = 0
+2018/07/25 11:50:21 -- cbcdv-pdfgen01q -- cert copies okay
+2018/07/25 11:50:21 -- cbcdv-pdfgen01q -- successfully renamed certs in c:\app\certs\
+2018/07/25 11:50:22 -- cbcdv-pdfgen01q -- solo cert import okay
+2018/07/25 11:50:22 -- cbcdv-pdfgen01q -- ROOT cert imports okay
+2018/07/25 11:50:23 -- cbcdv-pdfgen01q -- INTERMEDIATE cert imports okay
+2018/07/25 11:50:25 -- cbcdv-pdfgen01q -- Certificate Private Key Permissions set on cbcdv-pdfgen01q
+2018/07/25 11:50:26 -- cbcdv-pdfgen01q -- c:\temp\certs cleanup success
+2018/07/25 11:50:41 -- cbcdv-web01q -- Test connection to cbcdv-web01q SUCCESS
+2018/07/25 11:50:41 -- cbcdv-web01q -- cert copies okay
+2018/07/25 11:50:41 -- cbcdv-web01q -- failed to rename certs in c:\app\certs
+2018/07/25 11:51:35 -- cbcdv-app01q -- Test connection to cbcdv-app01q SUCCESS
+2018/07/25 11:51:36 -- cbcdv-app01q -- cert copies failed. trycounter = 0
+2018/07/25 11:51:41 -- cbcdv-app01q -- cert copies okay
+2018/07/25 11:51:41 -- cbcdv-app01q -- successfully renamed certs in c:\app\certs\
+2018/07/25 11:51:41 -- cbcdv-app01q -- solo cert import okay
+2018/07/25 11:51:42 -- cbcdv-app01q -- ROOT cert imports okay
+2018/07/25 11:51:43 -- cbcdv-app01q -- INTERMEDIATE cert imports okay
+2018/07/25 11:51:45 -- cbcdv-app01q -- Certificate Private Key Permissions set on cbcdv-app01q
+2018/07/25 11:51:46 -- cbcdv-app01q -- c:\temp\certs cleanup success
+2018/07/25 11:52:01 -- cbcdv-app02q -- Test connection to cbcdv-app02q SUCCESS
+2018/07/25 11:52:01 -- cbcdv-app02q -- cert copies failed. trycounter = 0
+2018/07/25 11:52:06 -- cbcdv-app02q -- cert copies okay
+2018/07/25 11:52:06 -- cbcdv-app02q -- successfully renamed certs in c:\app\certs\
+2018/07/25 11:52:07 -- cbcdv-app02q -- solo cert import okay
+2018/07/25 11:52:08 -- cbcdv-app02q -- ROOT cert imports okay
+2018/07/25 11:52:08 -- cbcdv-app02q -- INTERMEDIATE cert imports okay
+2018/07/25 11:52:11 -- cbcdv-app02q -- Certificate Private Key Permissions set on cbcdv-app02q
+2018/07/25 11:52:11 -- cbcdv-app02q -- c:\temp\certs cleanup success
+2018/07/25 11:52:26 -- cbcdv-inet01q -- Test connection to cbcdv-inet01q SUCCESS
+2018/07/25 11:52:28 -- cbcdv-inet01q -- cert copies failed. trycounter = 0
+2018/07/25 11:52:33 -- cbcdv-inet01q -- cert copies okay
+2018/07/25 11:52:33 -- cbcdv-inet01q -- successfully renamed certs in c:\app\certs\
+2018/07/25 11:52:34 -- cbcdv-inet01q -- solo cert import okay
+2018/07/25 11:52:35 -- cbcdv-inet01q -- ROOT cert imports okay
+2018/07/25 11:52:36 -- cbcdv-inet01q -- INTERMEDIATE cert imports okay
+2018/07/25 11:52:40 -- cbcdv-inet01q -- Certificate Private Key Permissions set on cbcdv-inet01q
+2018/07/25 11:52:41 -- cbcdv-inet01q -- c:\temp\certs cleanup success
+2018/07/25 11:52:56 -- cbcdv-pdfgen01q -- Test connection to cbcdv-pdfgen01q SUCCESS
+2018/07/25 11:52:57 -- cbcdv-pdfgen01q -- cert copies failed. trycounter = 0
+2018/07/25 11:53:02 -- cbcdv-pdfgen01q -- cert copies okay
+2018/07/25 11:53:02 -- cbcdv-pdfgen01q -- successfully renamed certs in c:\app\certs\
+2018/07/25 11:53:03 -- cbcdv-pdfgen01q -- solo cert import okay
+2018/07/25 11:53:04 -- cbcdv-pdfgen01q -- ROOT cert imports okay
+2018/07/25 11:53:04 -- cbcdv-pdfgen01q -- INTERMEDIATE cert imports okay
+2018/07/25 11:53:06 -- cbcdv-pdfgen01q -- Certificate Private Key Permissions set on cbcdv-pdfgen01q
+2018/07/25 11:53:07 -- cbcdv-pdfgen01q -- c:\temp\certs cleanup success
+2018/07/25 11:53:22 -- cbcdv-web01q -- Test connection to cbcdv-web01q SUCCESS
+2018/07/25 11:53:22 -- cbcdv-web01q -- cert copies okay
+2018/07/25 11:53:22 -- cbcdv-web01q -- successfully renamed certs in c:\app\certs\
+2018/07/25 11:53:23 -- cbcdv-web01q -- solo cert import okay
+2018/07/25 11:53:24 -- cbcdv-web01q -- ROOT cert imports okay
+2018/07/25 11:53:25 -- cbcdv-web01q -- INTERMEDIATE cert imports okay
+2018/07/25 11:53:29 -- cbcdv-web01q -- Certificate Private Key Permissions set on cbcdv-web01q
+2018/07/25 11:53:30 -- cbcdv-web01q -- c:\temp\certs cleanup success
+2018/07/25 11:53:45 -- cbcdv-web02q -- Test connection to cbcdv-web02q SUCCESS
+2018/07/25 11:53:46 -- cbcdv-web02q -- cert copies failed. trycounter = 0
+2018/07/25 11:53:51 -- cbcdv-web02q -- cert copies okay
+2018/07/25 11:53:51 -- cbcdv-web02q -- successfully renamed certs in c:\app\certs\
+2018/07/25 11:53:52 -- cbcdv-web02q -- solo cert import okay
+2018/07/25 11:53:54 -- cbcdv-web02q -- ROOT cert imports okay
+2018/07/25 11:53:55 -- cbcdv-web02q -- INTERMEDIATE cert imports okay
+2018/07/25 11:53:59 -- cbcdv-web02q -- Certificate Private Key Permissions set on cbcdv-web02q
+2018/07/25 11:54:00 -- cbcdv-web02q -- c:\temp\certs cleanup success
+2018/07/25 11:54:15 -- dvinapi01uwau -- Test connection to dvinapi01uwau SUCCESS
+2018/07/25 11:54:16 -- dvinapi01uwau -- cert copies failed. trycounter = 0
+2018/07/25 11:54:22 -- dvinapi01uwau -- cert copies okay
+2018/07/25 11:54:22 -- dvinapi01uwau -- solo cert import okay
+2018/07/25 11:54:23 -- dvinapi01uwau -- ROOT cert imports okay
+2018/07/25 11:54:24 -- dvinapi01uwau -- INTERMEDIATE cert imports okay
+2018/07/25 11:54:26 -- dvinapi01uwau -- Certificate Private Key Permissions set on dvinapi01uwau
+2018/07/25 11:54:27 -- dvinapi01uwau -- c:\temp\certs cleanup success
+2018/07/25 12:13:00 -- cbcdv-app01q -- Test connection to cbcdv-app01q SUCCESS
+2018/07/25 12:13:01 -- cbcdv-app01q -- cert copies failed. trycounter = 0
+2018/07/25 12:13:06 -- cbcdv-app01q -- cert copies okay
+2018/07/25 12:13:06 -- cbcdv-app01q -- successfully renamed certs in c:\app\certs\
+2018/07/25 12:13:07 -- cbcdv-app01q -- solo cert import okay
+2018/07/25 12:13:08 -- cbcdv-app01q -- ROOT cert imports okay
+2018/07/25 12:13:08 -- cbcdv-app01q -- INTERMEDIATE cert imports okay
+2018/07/25 12:13:11 -- cbcdv-app01q -- Certificate Private Key Permissions set on cbcdv-app01q
+2018/07/25 12:13:11 -- cbcdv-app01q -- c:\temp\certs cleanup success
+2018/07/25 12:13:26 -- cbcdv-app02q -- Test connection to cbcdv-app02q SUCCESS
+2018/07/25 12:13:27 -- cbcdv-app02q -- cert copies failed. trycounter = 0
+2018/07/25 12:13:32 -- cbcdv-app02q -- cert copies okay
+2018/07/25 12:13:32 -- cbcdv-app02q -- successfully renamed certs in c:\app\certs\
+2018/07/25 12:13:33 -- cbcdv-app02q -- solo cert import okay
+2018/07/25 12:13:34 -- cbcdv-app02q -- ROOT cert imports okay
+2018/07/25 12:13:35 -- cbcdv-app02q -- INTERMEDIATE cert imports okay
+2018/07/25 12:13:38 -- cbcdv-app02q -- Certificate Private Key Permissions set on cbcdv-app02q
+2018/07/25 12:13:38 -- cbcdv-app02q -- c:\temp\certs cleanup success
+2018/07/25 12:13:53 -- cbcdv-inet01q -- Test connection to cbcdv-inet01q SUCCESS
+2018/07/25 12:13:55 -- cbcdv-inet01q -- cert copies failed. trycounter = 0
+2018/07/25 12:14:00 -- cbcdv-inet01q -- cert copies okay
+2018/07/25 12:14:00 -- cbcdv-inet01q -- successfully renamed certs in c:\app\certs\
+2018/07/25 12:14:01 -- cbcdv-inet01q -- solo cert import okay
+2018/07/25 12:14:02 -- cbcdv-inet01q -- ROOT cert imports okay
+2018/07/25 12:14:03 -- cbcdv-inet01q -- INTERMEDIATE cert imports okay
+2018/07/25 12:14:07 -- cbcdv-inet01q -- Certificate Private Key Permissions set on cbcdv-inet01q
+2018/07/25 12:14:08 -- cbcdv-inet01q -- c:\temp\certs cleanup success
+2018/07/25 12:14:23 -- cbcdv-pdfgen01q -- Test connection to cbcdv-pdfgen01q SUCCESS
+2018/07/25 12:14:24 -- cbcdv-pdfgen01q -- cert copies failed. trycounter = 0
+2018/07/25 12:14:29 -- cbcdv-pdfgen01q -- cert copies okay
+2018/07/25 12:14:29 -- cbcdv-pdfgen01q -- successfully renamed certs in c:\app\certs\
+2018/07/25 12:14:30 -- cbcdv-pdfgen01q -- solo cert import okay
+2018/07/25 12:14:31 -- cbcdv-pdfgen01q -- ROOT cert imports okay
+2018/07/25 12:14:31 -- cbcdv-pdfgen01q -- INTERMEDIATE cert imports okay
+2018/07/25 12:14:34 -- cbcdv-pdfgen01q -- Certificate Private Key Permissions set on cbcdv-pdfgen01q
+2018/07/25 12:14:34 -- cbcdv-pdfgen01q -- c:\temp\certs cleanup success
+2018/07/25 12:14:49 -- cbcdv-web01q -- Test connection to cbcdv-web01q SUCCESS
+2018/07/25 12:14:51 -- cbcdv-web01q -- cert copies failed. trycounter = 0
+2018/07/25 12:14:56 -- cbcdv-web01q -- cert copies okay
+2018/07/25 12:14:56 -- cbcdv-web01q -- successfully renamed certs in c:\app\certs\
+2018/07/25 12:14:57 -- cbcdv-web01q -- solo cert import okay
+2018/07/25 12:14:58 -- cbcdv-web01q -- ROOT cert imports okay
+2018/07/25 12:14:59 -- cbcdv-web01q -- INTERMEDIATE cert imports okay
+2018/07/25 12:15:02 -- cbcdv-web01q -- Certificate Private Key Permissions set on cbcdv-web01q
+2018/07/25 12:15:03 -- cbcdv-web01q -- c:\temp\certs cleanup success
+2018/07/25 12:15:18 -- cbcdv-web02q -- Test connection to cbcdv-web02q SUCCESS
+2018/07/25 12:15:20 -- cbcdv-web02q -- cert copies failed. trycounter = 0
+2018/07/25 12:15:25 -- cbcdv-web02q -- cert copies okay
+2018/07/25 12:15:25 -- cbcdv-web02q -- successfully renamed certs in c:\app\certs\
+2018/07/25 12:15:26 -- cbcdv-web02q -- solo cert import okay
+2018/07/25 12:15:27 -- cbcdv-web02q -- ROOT cert imports okay
+2018/07/25 12:15:29 -- cbcdv-web02q -- INTERMEDIATE cert imports okay
+2018/07/25 12:15:33 -- cbcdv-web02q -- Certificate Private Key Permissions set on cbcdv-web02q
+2018/07/25 12:15:33 -- cbcdv-web02q -- c:\temp\certs cleanup success
+2018/07/25 12:15:48 -- dvinapi01uwau -- Test connection to dvinapi01uwau SUCCESS
+2018/07/25 12:15:50 -- dvinapi01uwau -- cert copies failed. trycounter = 0
+2018/07/25 12:15:55 -- dvinapi01uwau -- cert copies okay
+2018/07/25 12:15:55 -- dvinapi01uwau -- solo cert import okay
+2018/07/25 12:15:56 -- dvinapi01uwau -- ROOT cert imports okay
+2018/07/25 12:15:57 -- dvinapi01uwau -- INTERMEDIATE cert imports okay
+2018/07/25 12:15:59 -- dvinapi01uwau -- Certificate Private Key Permissions set on dvinapi01uwau
+2018/07/25 12:15:59 -- dvinapi01uwau -- c:\temp\certs cleanup success
+2018/07/25 12:16:21 -- cbcdv-app01q -- Test connection to cbcdv-app01q SUCCESS
+2018/07/25 12:16:22 -- cbcdv-app01q -- cert copies failed. trycounter = 0
+2018/07/25 12:16:27 -- cbcdv-app01q -- cert copies okay
+2018/07/25 12:16:27 -- cbcdv-app01q -- successfully renamed certs in c:\app\certs\
+2018/07/25 12:16:28 -- cbcdv-app01q -- solo cert import okay
+2018/07/25 12:16:28 -- cbcdv-app01q -- ROOT cert imports okay
+2018/07/25 12:16:29 -- cbcdv-app01q -- INTERMEDIATE cert imports okay
+2018/07/25 12:16:32 -- cbcdv-app01q -- Certificate Private Key Permissions set on cbcdv-app01q
+2018/07/25 12:16:32 -- cbcdv-app01q -- c:\temp\certs cleanup success
+2018/07/25 12:16:47 -- cbcdv-app02q -- Test connection to cbcdv-app02q SUCCESS
+2018/07/25 12:16:48 -- cbcdv-app02q -- cert copies failed. trycounter = 0
+2018/07/25 12:16:53 -- cbcdv-app02q -- cert copies okay
+2018/07/25 12:16:53 -- cbcdv-app02q -- successfully renamed certs in c:\app\certs\
+2018/07/25 12:16:54 -- cbcdv-app02q -- solo cert import okay
+2018/07/25 12:16:55 -- cbcdv-app02q -- ROOT cert imports okay
+2018/07/25 12:16:56 -- cbcdv-app02q -- INTERMEDIATE cert imports okay
+2018/07/25 12:16:59 -- cbcdv-app02q -- Certificate Private Key Permissions set on cbcdv-app02q
+2018/07/25 12:16:59 -- cbcdv-app02q -- c:\temp\certs cleanup success
+2018/07/25 12:17:14 -- cbcdv-inet01q -- Test connection to cbcdv-inet01q SUCCESS
+2018/07/25 12:17:15 -- cbcdv-inet01q -- cert copies failed. trycounter = 0
+2018/07/25 12:17:20 -- cbcdv-inet01q -- cert copies okay
+2018/07/25 12:17:20 -- cbcdv-inet01q -- successfully renamed certs in c:\app\certs\
+2018/07/25 12:17:22 -- cbcdv-inet01q -- solo cert import okay
+2018/07/25 12:17:23 -- cbcdv-inet01q -- ROOT cert imports okay
+2018/07/25 12:17:24 -- cbcdv-inet01q -- INTERMEDIATE cert imports okay
+2018/07/25 12:17:30 -- cbcdv-inet01q -- Certificate Private Key Permissions set on cbcdv-inet01q
+2018/07/25 12:17:31 -- cbcdv-inet01q -- c:\temp\certs cleanup success
+2018/07/25 12:17:46 -- cbcdv-pdfgen01q -- Test connection to cbcdv-pdfgen01q SUCCESS
+2018/07/25 12:17:46 -- cbcdv-pdfgen01q -- cert copies failed. trycounter = 0
+2018/07/25 12:17:51 -- cbcdv-pdfgen01q -- cert copies okay
+2018/07/25 12:17:51 -- cbcdv-pdfgen01q -- successfully renamed certs in c:\app\certs\
+2018/07/25 12:17:52 -- cbcdv-pdfgen01q -- solo cert import okay
+2018/07/25 12:17:53 -- cbcdv-pdfgen01q -- ROOT cert imports okay
+2018/07/25 12:17:53 -- cbcdv-pdfgen01q -- INTERMEDIATE cert imports okay
+2018/07/25 12:17:56 -- cbcdv-pdfgen01q -- Certificate Private Key Permissions set on cbcdv-pdfgen01q
+2018/07/25 12:17:57 -- cbcdv-pdfgen01q -- c:\temp\certs cleanup success
+2018/07/25 12:18:12 -- cbcdv-web01q -- Test connection to cbcdv-web01q SUCCESS
+2018/07/25 12:18:13 -- cbcdv-web01q -- cert copies failed. trycounter = 0
+2018/07/25 12:18:18 -- cbcdv-web01q -- cert copies okay
+2018/07/25 12:18:18 -- cbcdv-web01q -- successfully renamed certs in c:\app\certs\
+2018/07/25 12:18:20 -- cbcdv-web01q -- solo cert import okay
+2018/07/25 12:18:21 -- cbcdv-web01q -- ROOT cert imports okay
+2018/07/25 12:18:21 -- cbcdv-web01q -- INTERMEDIATE cert imports okay
+2018/07/25 12:18:26 -- cbcdv-web01q -- Certificate Private Key Permissions set on cbcdv-web01q
+2018/07/25 12:18:27 -- cbcdv-web01q -- c:\temp\certs cleanup success
+2018/07/25 12:18:42 -- cbcdv-web02q -- Test connection to cbcdv-web02q SUCCESS
+2018/07/25 12:18:43 -- cbcdv-web02q -- cert copies failed. trycounter = 0
+2018/07/25 12:18:48 -- cbcdv-web02q -- cert copies okay
+2018/07/25 12:18:48 -- cbcdv-web02q -- successfully renamed certs in c:\app\certs\
+2018/07/25 12:18:50 -- cbcdv-web02q -- solo cert import okay
+2018/07/25 12:18:51 -- cbcdv-web02q -- ROOT cert imports okay
+2018/07/25 12:18:52 -- cbcdv-web02q -- INTERMEDIATE cert imports okay
+2018/07/25 12:18:57 -- cbcdv-web02q -- Certificate Private Key Permissions set on cbcdv-web02q
+2018/07/25 12:18:58 -- cbcdv-web02q -- c:\temp\certs cleanup success
+2018/07/25 12:19:13 -- dvinapi01uwau -- Test connection to dvinapi01uwau SUCCESS
+2018/07/25 12:19:14 -- dvinapi01uwau -- cert copies failed. trycounter = 0
+2018/07/25 12:19:19 -- dvinapi01uwau -- cert copies okay
+2018/07/25 12:19:20 -- dvinapi01uwau -- solo cert import okay
+2018/07/25 12:19:20 -- dvinapi01uwau -- ROOT cert imports okay
+2018/07/25 12:19:21 -- dvinapi01uwau -- INTERMEDIATE cert imports okay
+2018/07/25 12:19:24 -- dvinapi01uwau -- Certificate Private Key Permissions set on dvinapi01uwau
+2018/07/25 12:19:24 -- dvinapi01uwau -- c:\temp\certs cleanup success
+2018/07/27 08:10:41 -- dvapp01uwad -- Test connection to dvapp01uwad SUCCESS
+2018/07/27 08:10:42 -- dvapp01uwad -- cert copies failed. trycounter = 0
+2018/07/27 08:10:47 -- dvapp01uwad -- cert copies okay
+2018/07/27 08:10:47 -- dvapp01uwad -- successfully renamed certs in c:\app\certs\
+2018/07/27 08:10:48 -- dvapp01uwad -- solo cert import okay
+2018/07/27 08:10:49 -- dvapp01uwad -- ROOT cert imports okay
+2018/07/27 08:10:49 -- dvapp01uwad -- INTERMEDIATE cert imports okay
+2018/07/27 08:10:52 -- dvapp01uwad -- Certificate Private Key Permissions set on dvapp01uwad
+2018/07/27 08:10:53 -- dvapp01uwad -- c:\temp\certs cleanup success
+2018/07/27 08:11:08 -- dvgw01uwwd -- Test connection to dvgw01uwwd SUCCESS
+2018/07/27 08:11:09 -- dvgw01uwwd -- cert copies failed. trycounter = 0
+2018/07/27 08:11:14 -- dvgw01uwwd -- cert copies okay
+2018/07/27 08:11:14 -- dvgw01uwwd -- successfully renamed certs in c:\app\certs\
+2018/07/27 08:11:15 -- dvgw01uwwd -- solo cert import okay
+2018/07/27 08:11:15 -- dvgw01uwwd -- ROOT cert imports okay
+2018/07/27 08:11:16 -- dvgw01uwwd -- INTERMEDIATE cert imports okay
+2018/07/27 08:11:19 -- dvgw01uwwd -- Certificate Private Key Permissions set on dvgw01uwwd
+2018/07/27 08:11:20 -- dvgw01uwwd -- c:\temp\certs cleanup success
+2018/07/27 08:11:35 -- dvinet01uwwd -- Test connection to dvinet01uwwd SUCCESS
+2018/07/27 08:11:36 -- dvinet01uwwd -- cert copies failed. trycounter = 0
+2018/07/27 08:11:41 -- dvinet01uwwd -- cert copies okay
+2018/07/27 08:11:41 -- dvinet01uwwd -- successfully renamed certs in c:\app\certs\
+2018/07/27 08:11:42 -- dvinet01uwwd -- solo cert import okay
+2018/07/27 08:11:42 -- dvinet01uwwd -- ROOT cert imports okay
+2018/07/27 08:11:43 -- dvinet01uwwd -- INTERMEDIATE cert imports okay
+2018/07/27 08:11:46 -- dvinet01uwwd -- Certificate Private Key Permissions set on dvinet01uwwd
+2018/07/27 08:11:47 -- dvinet01uwwd -- c:\temp\certs cleanup success
+2018/07/27 08:12:02 -- dvpdf01uwad -- Test connection to dvpdf01uwad SUCCESS
+2018/07/27 08:12:03 -- dvpdf01uwad -- cert copies failed. trycounter = 0
+2018/07/27 08:12:08 -- dvpdf01uwad -- cert copies okay
+2018/07/27 08:12:08 -- dvpdf01uwad -- successfully renamed certs in c:\app\certs\
+2018/07/27 08:12:08 -- dvpdf01uwad -- solo cert import okay
+2018/07/27 08:12:09 -- dvpdf01uwad -- ROOT cert imports okay
+2018/07/27 08:12:10 -- dvpdf01uwad -- INTERMEDIATE cert imports okay
+2018/07/27 08:12:13 -- dvpdf01uwad -- Certificate Private Key Permissions set on dvpdf01uwad
+2018/07/27 08:12:14 -- dvpdf01uwad -- c:\temp\certs cleanup success
+2018/07/27 08:12:29 -- dvweb01uwwd -- Test connection to dvweb01uwwd SUCCESS
+2018/07/27 08:12:30 -- dvweb01uwwd -- cert copies failed. trycounter = 0
+2018/07/27 08:12:35 -- dvweb01uwwd -- cert copies okay
+2018/07/27 08:12:35 -- dvweb01uwwd -- successfully renamed certs in c:\app\certs\
+2018/07/27 08:12:35 -- dvweb01uwwd -- solo cert import okay
+2018/07/27 08:12:36 -- dvweb01uwwd -- ROOT cert imports okay
+2018/07/27 08:12:37 -- dvweb01uwwd -- INTERMEDIATE cert imports okay
+2018/07/27 08:12:40 -- dvweb01uwwd -- Certificate Private Key Permissions set on dvweb01uwwd
+2018/07/27 08:12:41 -- dvweb01uwwd -- c:\temp\certs cleanup success
