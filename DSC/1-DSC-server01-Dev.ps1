@@ -122,10 +122,10 @@ Foreach ($target in $computers) {
         Try 
         {
             echo "starting #2 DSC script run. This compiles the script into a .mof and runs the entire script. Its slow on first run but should be faster on subsequent runs"
-            echo "use your .cbc account credential here"
+            echo "use your admin account here"
             $credential = Get-Credential
             $session = New-PSSession $target -Name $target -Authentication Credssp -Credential $credential
-            Invoke-Command –Session $session –scriptblock { param($p6) . $p6} -ArgumentList $localfilepath1 -ErrorAction Stop
+            Invoke-Command â€“Session $session â€“scriptblock { param($p6) . $p6} -ArgumentList $localfilepath1 -ErrorAction Stop
             echo " "
             echo "#2 DSC script finished running."
         }
