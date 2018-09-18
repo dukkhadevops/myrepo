@@ -53,8 +53,7 @@ Configuration $DSCconfigName {
         #region Basic File & Folder section. 
         #Some permissions for c:\app subdirs handled in SMB share region
         ########
-        
-        #$dvconfigpath = "\\dfs\nas\DV_Shared\AppConfig\Servers\dvweb01uwwl\conf\dvconfig.xml"
+       
         $path4 = "c:\www"
         $path6 = "C:\inetpub\logs\LogFiles\W3SVC1"
 
@@ -272,14 +271,14 @@ Configuration $DSCconfigName {
         #setup site folder structure & permissions
         foreach($pool in $appPools)
         {
-            #if the app pool name = dataverify then create the folder in c:\www & assign permissions for it
+            #if the app pool name = application01 then create the folder in c:\www & assign permissions for it
             If ( $pool.appPool -eq "application01" )
             {
                 $poolName = $pool.AppPool
                 $permissionname = $poolname + "permissions"
                 $identity = $pool.AppPoolIdentity
 
-                File $poolName #setup parent dataverify directory
+                File $poolName #setup parent directory
                 {
                     Ensure = "Present"  # You can also set Ensure to "Absent"
                     Type = "Directory" # Default is "File".
@@ -312,8 +311,8 @@ Configuration $DSCconfigName {
             }
                 
             #else create the folders for each apppool/app & assign permissions specific to each app pool identity/corresponding app
-            #also create permissions for each identity on the dataverify parent folder with no inheritance
-            ElseIf ( $pool.appPool -ne "Dataverify" )
+            #also create permissions for each identity on the parent folder with no inheritance
+            ElseIf ( $pool.appPool -ne "application01" )
             {
                 $poolName = $pool.AppPool
                 $permissionname = $poolname + "permissions"
@@ -323,13 +322,13 @@ Configuration $DSCconfigName {
                 {
                     Ensure = "Present"  # You can also set Ensure to "Absent"
                     Type = "Directory" # Default is "File".
-                    DestinationPath = "C:\www\Dataverify\$poolName"
+                    DestinationPath = "C:\www\application01\$poolName"
                 }
             
                 cNtfsPermissionEntry $permissionname #setup permissions on each directory
                 {
                     Ensure = 'Present'
-                    Path = "C:\www\Dataverify\$poolname"
+                    Path = "C:\www\application01\$poolname"
                     Principal = $identity
                     AccessControlInformation = @(
                         cNtfsAccessControlInformation
@@ -350,12 +349,12 @@ Configuration $DSCconfigName {
                     DependsOn = "[File]$poolname"
                 }
 
-                #comment out additional dataverify folder permissions for now
+                #comment out additional folder permissions for now
                 <#
                 cNtfsPermissionEntry moreDataverifypermissions #setup permissions on dataverify parent dir, no inheritance to subdirs
                 {
                     Ensure = 'Present'
-                    Path = "C:\www\Dataverify"
+                    Path = "C:\www\application01"
                     Principal = $identity
                     AccessControlInformation = @(
                         cNtfsAccessControlInformation
@@ -373,8 +372,8 @@ Configuration $DSCconfigName {
                             NoPropagateInherit = $false
                         }
                     )
-                    #depends on the dataverify file path creation from the above if statement
-                    DependsOn = "[File]Dataverify"
+                    #depends on the file path creation from the above if statement
+                    DependsOn = "[File]application01"
                 }
                 #>
             }
