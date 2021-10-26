@@ -1,0 +1,51 @@
+Api.AllowedCorsOrigins: [ "http://$[ClientDomain]", "https://$[ClientDomain]" ]
+Api.BaseUrl: https://$[ApiDomain]
+Api.ClientId: traject
+Api.ClientRedirectUrls: [ "https://$[ClientDomain]/auth-callback", "https://$[ClientDomain]/popup", "https://$[ClientDomain]/silent-refresh", "https://$[ClientDomain]"]
+Api.ClientSecret: 77777777777777777777777777777777
+Api.ClientUri: https://$[ClientDomain]
+Api.ImagePath: /files/images
+Api.PostLogoutRedirectUris: [ "https://$[ClientDomain]/auth-callback" ]
+Api.Scopes: [ "openid", "email", "profile", "address", "offline_access", "api", "roles" ]
+Api.Swagger.AuthorizationUrl: /connect/authorize
+Api.Swagger.TokenUrl: /connect/token
+Api.UploadPath: C:\inetpub\wwwroot\vpl-traject-client\Staging\Files
+Api.ResetPasswordTokenLifetimeInDays: $[ResetPasswordTokenLifetimeInDays]
+Client.apiUrl: https://$[ApiDomain]/api
+Client.appUrl: https://$[ClientDomain]
+Client.oidc_config.authority: https://$[ApiDomain]/
+Client.oidc_config.client_id: traject
+Client.oidc_config.post_logout_redirect_uri: https://$[ClientDomain]/gateway
+Client.oidc_config.redirect_uri: https://$[ClientDomain]/auth-callback
+Client.oidc_config.response_type: code
+Client.oidc_config.scope: openid email profile address offline_access api roles
+ConnectionStrings.DefaultConnection: $[DbConnectionString]
+EasyPost.ProdApiKey: $[EasyPostProdApiKey]
+EasyPost.TestApiKey: $[EasyPostTestApiKey]
+EasyPost.UseTestApiKey: $[EasyPostUseTestApiKey]
+EasyPost.EnableEnvironmentToggle: $[EasyPostEnableEnvironmentToggle]
+UpsApiClient.Authentication.Password: $[UpsApiClientAuthenticationPassword]
+UpsCapitalApiClient.QuoteEndpoint: $[upsCapitalApiQuoteEndpoint]
+UpsCapitalApiClient.ConfirmationEndpoint: $[upsCapitalApiConfirmationEndpoint]
+UpsCapitalApiClient.PartnerId: 7777777777
+UpsCapitalApiClient.Bearer: $[upsCapitalApiBearerToken]
+UpsCapitalApiClient.ClientId: $[upsCapitalApiClientIdToken]
+UpsCapitalApiClient.ClientSecret: $[upsCapitalApiClientSecretToken]
+GainsightAnalytics.AppId: $[GainsightAnalyticsAppId]
+ReleaseVersion: $[ReleaseVersion]
+SendGridOptions.ApiKey: $[SendGridOptionsApiKey]
+StartupOptions.SeedTestData: $[isPREnvironment]
+StartupOptions.EnableSwagger: $[isPREnvironment]
+StartupOptions.EnforceHttpsRedirection: $[EnforceHttpsRedirection]
+system.debug: false
+
+
+appUrl: https://$[ClientDomain]
+apiUrl: https://$[ApiDomain]/api
+apiReportsUrl: https://$[ApiDomain]
+releaseVersion: $[ReleaseVersion]
+oidc_config.authority: https://$[ApiDomain]
+oidc_config.redirect_uri: https://$[ClientDomain]/auth-callback
+oidc_config.post_logout_redirect_uri: https://$[ClientDomain]/gateway
+oidc_config.scope: "openid email profile address offline_access api roles"
+gainsightAnalytics.appId: $[GainsightAnalyticsAppId]

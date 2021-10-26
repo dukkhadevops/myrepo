@@ -1,0 +1,65 @@
+steps:
+
+#show initial directories and such for debugging
+- task: CmdLine@2
+  displayName: Show initial directories - CmdLineTask
+  inputs:
+    script: |
+      echo Hello World
+      echo here are the directories we see
+      echo for future reference this is D:\a\1\s or .\(Pipeline.Workspace)\s
+      echo -------------------------------
+      dir
+      echo -------------------------------
+      echo show contents of Kodak
+      echo -------------------------------
+      cd Kodak
+      dir
+      echo -------------------------------
+      echo done with cmdlinetask
+      echo -------------------------------
+
+- task: DotNetCoreCLI@2
+  displayName: DotNetCore Restore Packages
+  inputs:
+    command: 'restore'
+    includeNuGetOrg: true
+    projects: |
+      pipelines-dotnet-core.csproj
+
+- task: CmdLine@2
+  displayName: Publish App
+  inputs:
+    script: 'dotnet publish pipelines-dotnet-core.csproj --configuration Release --output $(Build.ArtifactStagingDirectory)/KodakWebApp'
+
+- task: PublishBuildArtifacts@1
+  displayName: Publish App Artifacts
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)/KodakWebApp'
+    ArtifactName: 'KodakWebApp'
+    publishLocation: 'Container'
+    Parallel: true
+    ParallelCount: 8
+
+- task: CmdLine@2
+  displayName: Show contents - CmdLineTask
+  inputs:
+    script: |
+      echo here are the directories we see
+      echo -------------------------------
+      dir
+      echo -------------------------------
+      echo Pipeline.Workspace: $(Pipeline.Workspace)
+      echo show contents of Pipeline.Workspace
+      echo -------------------------------
+      cd $(Pipeline.Workspace)
+      dir
+      echo -------------------------------
+      echo cd to /home/vsts/work/1/s and show contents
+      echo -------------------------------
+      cd s
+      dir
+      echo -------------------------------
+      dir
+      echo -------------------------------
+      echo done with cmdlinetask  

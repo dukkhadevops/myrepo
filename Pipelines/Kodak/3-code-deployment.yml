@@ -1,0 +1,117 @@
+#region params
+parameters:
+- name: 'BranchName'
+  type: string
+  default: 'defaultBranchName'
+- name: 'ProductName'
+  type: string
+  default: 'defaultProductName'
+- name: 'ServicePrincipalName'
+  type: string
+  default: 'defaultServicePrincipalName'
+- name: 'Location'
+  type: string
+  default: 'defaultLocation'
+- name: 'Environment'
+  type: string
+  default: 'defaultEnvironment'
+#endregion
+
+#we need to use a windows agent since we are using AzureRmWebAppDeployment@4 which is using 'webdeploy options' - ubuntu errors out on deploy
+#adding download path for many of these artifact downloads. this is required because we want to search these apps for .json files
+##to do variable replacement. If we didn't put them somewhere we'd have to search /a & /b & /s as well as these artifact folders :(
+steps:
+
+#region download tasks
+- download: current
+  artifact: PipelinesKodakArtifact
+
+- task: DownloadPipelineArtifact@2
+  inputs:
+    artifact: KodakWebApp
+    downloadPath: $(Pipeline.Workspace)/KodakWebApp
+#endregion
+
+#show initial directories and such for debugging
+- task: CmdLine@2
+  displayName: Show incoming params and directories - CmdLineTask
+  inputs:
+    script: |
+      echo Hello World
+      echo BranchName: ${{ parameters.BranchName }}
+      echo ProductName: ${{ parameters.ProductName }}
+      echo SerivcePrincipalName: ${{ parameters.ServicePrincipalName }}
+      echo Location: ${{ parameters.Location }}
+      echo Environment: ${{ parameters.Environment }}
+      echo heres what we see
+      echo --------------------------------------------------------------
+      dir
+      echo --------------------------------------------------------------
+      echo Pipeline.Workspace = $(Pipeline.Workspace)
+      echo show contents of Pipeline.Workspace
+      cd $(Pipeline.Workspace)
+      echo --------------------------------------------------------------
+      dir
+      echo --------------------------------------------------------------
+      echo done with cmdlinetask     
+
+#define prefix - this powershell will set global variables we can use&reference elsewhere
+- task: AzurePowerShell@4
+  name: env
+  displayName: 'Define prefix - AzurePowershell task'
+  inputs:
+    azureSubscription: ${{ parameters.ServicePrincipalName }}
+    ScriptType: filePath
+    scriptPath: $(Pipeline.Workspace)/PipelinesKodakArtifact/Powershell/PrefixDefine.ps1
+    scriptArguments: -environment '${{ parameters.Environment }}' -branchname ${{ parameters.BranchName }}
+    azurePowerShellVersion: LatestVersion
+
+#pull security - this powershell goes and gets some security keys and sets them as variables for use elsewhere
+- task: AzurePowerShell@4
+  name: keys
+  displayName: 'Access Store'
+  inputs:
+    azureSubscription: ${{ parameters.ServicePrincipalName }}
+    ScriptType: filePath
+    scriptPath: $(Pipeline.Workspace)/PipelinesTrajectArtifact/Powershell/pull_security.ps1
+    scriptArguments: -envPrefix $(env.ENVPrefix) -envResourceId $(env.ResourceId)
+    azurePowerShellVersion: LatestVersion
+
+- pwsh:
+    Write-Host "here is your (keys.adminsecret) - $(keys.adminsecret) ||"
+    Write-Host "here is your (keys.DatabaseConnectionString) - $(keys.DatabaseConnectionString) ||"
+    Write-Host "here is your (keys.integrationTestsConnString) - $(keys.integrationTestsConnString) ||"
+    Write-Host "this should be a secure string for ups api pass - $(keys.upsApiPassword) ||"
+    Write-Host "upsCapitalApiBearerToken = $(keys.upsCapitalApiBearerToken) ||" 
+    Write-Host "upsCapitalApiClientIdToken = $(keys.upsCapitalApiClientIdToken) ||"
+    Write-Host "upsCapitalApiClientSecretToken = $(keys.upsCapitalApiClientSecretToken)"
+
+##########################################################
+#region try all app variable replacement after build time
+#if you look at the previous steps you'll see we should be using $(pipline.workspace)/s for everything
+#this should be, basically.... /out, /ImportingFunctions, /MappingFunctions, ReconciliationFunctions
+- task: AzurePowerShell@3
+  displayName: 'Fix JSON variables AzurePowerShellTask'
+  inputs:
+    azureSubscription: ${{ parameters.ServicePrincipalName }}
+    ScriptPath: $(Pipeline.Workspace)/PipelinesTrajectArtifact/Powershell/updateJSONconfigs.ps1
+    ScriptArguments: -Environment ${{ parameters.Environment }} -VariablesFilePath $(Pipeline.Workspace)/PipelinesTrajectArtifact/Powershell -JsonSearchPath $(Pipeline.Workspace)/appArtifacts -envResourceId $(env.ResourceId) -dbConnectionString "$(keys.DatabaseConnectionString)" -buildVersion "$(ver.buildVersion)" -upsApiPassword $(keys.upsApiPassword) -upsCapitalApiBearerToken $(keys.upsCapitalApiBearerToken) -upsCapitalApiClientIdToken $(keys.upsCapitalApiClientIdToken) -upsCapitalApiClientSecretToken $(keys.upsCapitalApiClientSecretToken)
+    azurePowerShellVersion: LatestVersion
+#endregion
+##########################################################
+
+##########################################################
+#region deploy web apps
+- task: AzureRmWebAppDeployment@4
+  displayName: 'Azure App Service Deploy: Kodak-webapp'
+  inputs:
+    azureSubscription: ${{ parameters.ServicePrincipalName }}
+    WebAppName: '$(env.ResourceId)-${{ parameters.ProductName }}-site'
+    packageForLinux: '$(Pipeline.Workspace)/KodakWebApp'
+    # enableCustomDeployment: true
+    # TakeAppOfflineFlag: false
+    # RemoveAdditionalFilesFlag: true
+
+##########################################################
+#endregion
+##########################################################

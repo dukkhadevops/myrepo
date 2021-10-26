@@ -1,0 +1,89 @@
+#region params
+parameters:
+- name: 'BranchName'
+  type: string
+  default: 'defaultBranchName'
+- name: 'ProductName'
+  type: string
+  default: 'defaultProductName'
+- name: 'ServicePrincipalName'
+  type: string
+  default: 'defaultServicePrincipalName'
+- name: 'Location'
+  type: string
+  default: 'defaultLocation'
+- name: 'Environment'
+  type: string
+  default: 'defaultEnvironment'
+#endregion
+
+stages:
+#####This is being called by 1-pull-request.yml or 1-promote-code so paths are relative to that file####
+#####using a template as a step must be done in this fashion. We cannot just call this from the artifact we created, unfortunately#####
+- stage: BuildAppsStage
+  dependsOn:
+  - StartKodakPipelineStage
+  jobs:
+  - job: BuildAppsJob
+    pool:
+      vmImage: 'windows-latest'
+    steps:
+    - task: CmdLine@2
+      displayName: Show incoming params - CmdLineTask
+      inputs:
+        script: |
+          echo Hello World
+          echo BranchName: ${{ parameters.BranchName }}
+          echo ProductName: ${{ parameters.ProductName }}
+          echo ConnectedServiceName: ${{ parameters.ServicePrincipalName }}
+          echo Location: ${{ parameters.Location }}
+          echo Environment: ${{ parameters.Environment }}
+          echo here are the directories we see
+          echo -------------------------------
+          dir
+          echo -------------------------------
+          echo show contents of Pipeline.Workspace
+          echo $(Pipeline.Workspace)
+          cd $(Pipeline.Workspace)
+          dir
+          echo done with cmdlinetask
+          echo -------------------------------
+    - template: ./2-build-apps.yml
+
+#####This is being called by 1-pull-request.yml or 1-promote-code so paths are relative to that file####
+#####using a template as a step must be done in this fashion. We cannot just call this from the artifact we created, unfortunately#####
+- stage: BuildInfrastructureStage
+  dependsOn:
+  - StartKodakPipelineStage
+  jobs:
+  - job: BuildInfrastructureJob
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - template: ./2-build-infrastructure.yml
+      parameters:
+        BranchName: ${{ parameters.BranchName }}
+        ProductName: ${{ parameters.ProductName }}
+        ServicePrincipalName: ${{ parameters.ServicePrincipalName }}
+        Location: ${{ parameters.Location }}
+        Environment: ${{ parameters.Environment }}
+    
+#####This is being called by 1-pull-request.yml or 1-promote-code so paths are relative to that file####
+#####using a template as a step must be done in this fashion. We cannot just call this from the artifact we created, unfortunately#####
+
+- stage: DeployCodeStage
+  dependsOn:
+  - BuildAppsStage
+  - BuildInfrastructureStage
+  jobs:
+  - job: CodeDeployJob
+    pool:
+      vmImage: 'windows-latest'
+    steps:
+    - template: ./3-code-deployment.yml
+      parameters:
+        BranchName: ${{ parameters.BranchName }}
+        ProductName: ${{ parameters.ProductName }}
+        ServicePrincipalName: ${{ parameters.ServicePrincipalName }}
+        Location: ${{ parameters.Location }}
+        Environment: ${{ parameters.Environment }}

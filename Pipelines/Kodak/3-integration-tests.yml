@@ -1,0 +1,138 @@
+#region params
+parameters:
+- name: 'BranchName'
+  type: string
+  default: 'defaultBranchName'
+- name: 'ProductName'
+  type: string
+  default: 'defaultProductName'
+- name: 'ServicePrincipalName'
+  type: string
+  default: 'defaultServicePrincipalName'
+- name: 'Location'
+  type: string
+  default: 'defaultLocation'
+- name: 'Environment'
+  type: string
+  default: 'defaultEnvironment'
+#endregion
+
+steps:
+
+#i think we need to checkout the code in order for the dotnet steps to actually see the csproj files right? otherwise we would have to download an artifact
+#- checkout: none
+
+#region download tasks
+- download: current
+  artifact: PipelinesTrajectArtifact
+
+- task: DownloadPipelineArtifact@2
+  inputs:
+    artifact: Migrations
+    downloadPath: $(Pipeline.Workspace)/Migrations
+#endregion
+
+#show initial directories and such for debugging
+- task: CmdLine@2
+  displayName: Show incoming params and directories - CmdLineTask
+  inputs:
+    script: |
+      echo Hello World
+      echo BranchName: ${{ parameters.BranchName }}
+      echo ProductName: ${{ parameters.ProductName }}
+      echo SerivcePrincipalName: ${{ parameters.ServicePrincipalName }}
+      echo Location: ${{ parameters.Location }}
+      echo Environment: ${{ parameters.Environment }}
+      echo heres what we see
+      echo --------------------------------------------------------------
+      dir
+      echo --------------------------------------------------------------
+      echo show contents of Traject-Application
+      echo --------------------------------------------------------------
+      cd Traject-Application
+      dir
+      echo --------------------------------------------------------------
+      echo done with cmdlinetask     
+
+#define prefix - this powershell will set global variables we can use&reference elsewhere
+- task: AzurePowerShell@4
+  name: env
+  displayName: 'Define prefix - AzurePowershell task'
+  inputs:
+    azureSubscription: ${{ parameters.ServicePrincipalName }}
+    ScriptType: filePath
+    scriptPath: $(Pipeline.Workspace)/PipelinesTrajectArtifact/Powershell/PrefixDefine.ps1
+    scriptArguments: -environment '${{ parameters.Environment }}' -branchname ${{ parameters.BranchName }}
+    azurePowerShellVersion: LatestVersion
+
+#pull security - this powershell goes and gets some security keys and sets them as variables for use elsewhere
+- task: AzurePowerShell@4
+  name: keys
+  displayName: 'Access Store'
+  inputs:
+    azureSubscription: ${{ parameters.ServicePrincipalName }}
+    ScriptType: filePath
+    scriptPath: $(Pipeline.Workspace)/PipelinesTrajectArtifact/Powershell/pull_security.ps1
+    scriptArguments: -envPrefix $(env.ENVPrefix) -envResourceId $(env.ResourceId)
+    azurePowerShellVersion: LatestVersion
+
+#show some of the variables we've just been setting up
+- pwsh:
+    Write-Host "here is your (keys.adminsecret) - $(keys.adminsecret) ||"
+    Write-Host "here is your (keys.DatabaseConnectionString) - $(keys.DatabaseConnectionString) ||"
+    Write-Host "here is your (keys.integrationTestsConnString) - $(keys.integrationTestsConnString) ||"
+    Write-Host "this should be a secure string for ups api pass - $(keys.upsApiPassword)"
+
+#since this is used for PRs only we need to feed the integration_tests connection string
+- task: CmdLine@2
+  displayName: 'CMDLineTask - Migrations - Fluent Migrator'
+  inputs:
+    workingDirectory: '$(Pipeline.Workspace)/Migrations'
+    script: Migrations.exe "$(keys.integrationTestsConnString)"
+
+- task: AzurePowerShell@3
+  displayName: 'Fix Test JSON variables AzurePowerShellTask'
+  inputs:
+    azureSubscription: ${{ parameters.ServicePrincipalName }}
+    ScriptPath: $(Pipeline.Workspace)/PipelinesTrajectArtifact/Powershell/updateTestJSONconfigs.ps1
+    ScriptArguments: -VariablesFilePath $(Pipeline.Workspace)/PipelinesTrajectArtifact/Powershell -JsonSearchPath "$(Pipeline.Workspace)/s/Traject-Application/IntegrationTests" -integrationTestsConnString "$(keys.integrationTestsConnString)" -upsApiPassword $(keys.upsApiPassword)
+    azurePowerShellVersion: LatestVersion
+
+#so i can see the resulting appsettings.json file after transform, publish the artifact
+- task: PublishBuildArtifacts@1
+  displayName: Publish Transformed TrajectApplication Dir
+  inputs:
+    PathtoPublish: '$(Pipeline.Workspace)/s/Traject-Application'
+    ArtifactName: 'Traject-Application'
+    publishLocation: 'Container'
+    Parallel: true
+    ParallelCount: 8
+
+#show current dir so we can try to get the path to the tests right
+- task: CmdLine@2
+  displayName: Show dir - CmdLineTask
+  inputs:
+    script: |
+      echo heres what we see
+      echo --------------------------------------------------------------
+      dir
+      echo --------------------------------------------------------------
+      echo show contents of Traject-Application
+      echo --------------------------------------------------------------
+      cd Traject-Application
+      dir
+      echo --------------------------------------------------------------
+      echo show Pipeline.Workspace
+      cd $(Pipeline.Workspace)
+      dir
+      echo done with cmdlinetask
+
+- task: DotNetCoreCLI@2
+  displayName: 'DotNet Tests'
+  continueOnError: True
+  inputs:
+    command: test
+    projects: |
+      $(Pipeline.Workspace)/s/Traject-Application/IntegrationTests/Tests.IntegrationTests.csproj
+      $(Pipeline.Workspace)/s/Traject-Application/UnitTests/Tests.UnitTests.csproj
+    arguments: '--configuration Release /p:CollectCoverage=true /p:Exclude="[Traject.Tests.Common]?%2c[Web.Api.Views]*" /p:CoverletOutputFormat=cobertura'

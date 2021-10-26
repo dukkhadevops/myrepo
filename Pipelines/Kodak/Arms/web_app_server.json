@@ -1,0 +1,83 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "deployPrefix": {
+            "metadata": {
+                "description": "The unique identifier placed at the begining of each resource"
+            },
+            "type": "string",
+            "maxLength": 11
+        },
+        "environment": {
+            "metadata": {
+                "description": "Identify the code level environment for the deployment. (qa, production, etc)"
+            },
+            "type": "string",
+            "defaultValue": "development"
+        },
+        "productname": {
+            "metadata": {
+                "description": "identifier for each project/product"
+            },
+            "type": "string"
+        }
+    },
+    "variables": {
+        "farm_name": "[toLower(concat(parameters('deployPrefix'), '-', Parameters('productname'), '-farm'))]",
+        "site_name": "[toLower(concat(parameters('deployPrefix'), '-', Parameters('productname'), '-site'))]"
+    },
+    "resources": [
+        {
+            "name": "[variables('farm_name')]",
+            "type": "Microsoft.Web/serverfarms",
+            "apiVersion": "2020-06-01",
+            "tags": {
+                "DeploymentName": "[parameters('deployPrefix')]",
+                "Environment": "[parameters('environment')]",
+                "ProductName": "[parameters('productname')]",
+                "Project": "[parameters('productname')]",
+                "Application": "[parameters('productname')]"
+            },
+            "sku": {
+                "name": "F1"
+            },
+            "location": "[resourceGroup().location]"
+        },
+        {
+            "name": "[variables('site_name')]",
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2018-11-01",
+            "location": "[resourceGroup().location]",
+            "tags": {
+                "DeploymentName": "[parameters('deployPrefix')]",
+                "Environment": "[parameters('environment')]",
+                "ProductName": "[parameters('productname')]",
+                "Project": "[parameters('productname')]",
+                "Application": "[parameters('productname')]"
+            },
+            "properties": {
+            },
+            "resources": [
+                {
+                   "name": "metadata",
+                   "type": "config",
+                   "apiVersion": "2018-11-01",
+                   "dependsOn": [
+                       "[resourceId('Microsoft.Web/sites', variables('site_name'))]"
+                   ],
+                   "tags": {
+                   },
+                   "properties": {
+                       "CURRENT_STACK": "dotnetcore"
+                   }
+                }
+            ],
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', variables('farm_name'))]"
+            ]
+        }
+    ],
+    "outputs": {
+    }
+}

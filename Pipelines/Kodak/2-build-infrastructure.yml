@@ -1,0 +1,73 @@
+#region params
+parameters:
+- name: 'BranchName'
+  type: string
+  default: 'defaultBranchName'
+- name: 'ProductName'
+  type: string
+  default: 'defaultProductName'
+- name: 'ServicePrincipalName'
+  type: string
+  default: 'defaultServicePrincipalName'
+- name: 'Location'
+  type: string
+  default: 'defaultLocation'
+- name: 'Environment'
+  type: string
+  default: 'defaultEnvironment'
+#endregion params
+
+steps:
+- download: current
+  artifact: PipelinesKodakArtifact
+
+  #show initial directories and such for debugging
+- task: CmdLine@2
+  displayName: Show incoming params and directories - CmdLineTask
+  inputs:
+    script: |
+      echo Hello World
+      echo BranchName: ${{ parameters.BranchName }}
+      echo ProductName: ${{ parameters.ProductName }}
+      echo SerivcePrincipalName: ${{ parameters.ServicePrincipalName }}
+      echo Location: ${{ parameters.Location }}
+      echo Environment: ${{ parameters.Environment }}
+      echo heres what we see
+      echo -------------------------------
+      dir
+      echo -------------------------------
+      echo Pipeline.Workspace = $(Pipeline.Workspace)
+      echo show contents of Pipeline.Workspace
+      cd $(Pipeline.Workspace)
+      echo -------------------------------
+      dir
+      echo -------------------------------
+      echo done with cmdlinetask         
+  
+#define prefix - this powershell will set global variables we can use&reference elsewhere
+- task: AzurePowerShell@4
+  name: env
+  displayName: 'Define prefix - AzurePowershell task'
+  inputs:
+    azureSubscription: ${{ parameters.ServicePrincipalName }}
+    ScriptType: filePath
+    scriptPath: $(Pipeline.Workspace)/PipelinesKodakArtifact/Powershell/PrefixDefine.ps1
+    scriptArguments: -environment '${{ parameters.Environment }}' -branchname ${{ parameters.BranchName }}
+    azurePowerShellVersion: LatestVersion
+
+#write out the vars we just set with the last script
+- pwsh:
+    Write-Host "here is your (env.ENVPrefix) - $(env.ENVPrefix) ||"
+    Write-Host "here is your (env.ResourceId) - $(env.ResourceId)"
+
+#call the -WEBAP arm
+- task: AzureResourceGroupDeployment@2
+  displayName: Call WEBAP ARM - Azure Resource Group Deployment
+  inputs:
+    action: Create Or Update Resource Group
+    azureSubscription: ${{ parameters.ServicePrincipalName }}
+    resourceGroupName: '$(env.ResourceId)-${{ parameters.ProductName }}-webap'
+    location: ${{ parameters.Location }}
+    deploymentMode: 'Incremental'
+    csmFile:  $(Pipeline.Workspace)/PipelinesKodakArtifact/Arms/web_app_server.json
+    overrideParameters: '-deployPrefix $(env.ResourceId) -productname ${{ parameters.ProductName }} -environment ${{ parameters.Environment }}'

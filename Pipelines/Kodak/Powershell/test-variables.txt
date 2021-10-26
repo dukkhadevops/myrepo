@@ -1,0 +1,2 @@
+ConnectionStrings.DefaultConnection: $[integrationTestsConnString]
+UpsApiClient.Authentication.Password: $[upsApiPassword]

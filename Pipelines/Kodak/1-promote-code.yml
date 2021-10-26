@@ -1,0 +1,227 @@
+#region params
+parameters:
+- name: 'ProductName'
+  type: string
+  default: 'defaultProductName'
+- name: 'ServicePrincipalName'
+  type: string
+  default: 'defaultServicePrincipalName'
+- name: 'Location'
+  type: string
+  default: 'defaultLocation'
+#endregion
+
+stages:
+#####This is being called by 1-pull-request.yml or 1-promote-code so paths are relative to that file####
+#####using a template as a step must be done in this fashion. We cannot just call this from the artifact we created, unfortunately#####
+- stage: BuildAppsStage
+  dependsOn:
+  - StartKodakPipelineStage
+  jobs:
+  - job: BuildAppsJob
+    pool:
+        vmImage: 'windows-latest'
+    steps:
+    - task: CmdLine@2
+      displayName: Show incoming params - CmdLineTask
+      inputs:
+        script: |
+          echo Hello World
+          echo ProductName: ${{ parameters.ProductName }}
+          echo ConnectedServiceName: ${{ parameters.ServicePrincipalName }}
+          echo here are the directories we see
+          echo -------------------------------
+          dir
+          echo -------------------------------
+          echo show contents of Pipeline.Workspace
+          echo $(Pipeline.Workspace)
+          cd $(Pipeline.Workspace)
+          dir
+          echo done with cmdlinetask
+          echo -------------------------------
+    - template: ./2-build-apps.yml
+
+# ##################################################################################################################################
+
+- stage: DeployQAStage
+  dependsOn:
+  - BuildAppsStage
+  jobs:
+  - deployment: QABuildInfrastructureDeployment
+    pool:
+      vmImage: 'ubuntu-latest'
+    environment: 'QA'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - template: ./2-build-infrastructure.yml
+            parameters:
+              BranchName: 'Qa'
+              ProductName: ${{ parameters.ProductName }}
+              ServicePrincipalName: ${{ parameters.ServicePrincipalName }}
+              Location: 'East US'
+              Environment: 'QA'
+              
+  - deployment: QACodeDeployDeployment
+    pool:
+      vmImage: 'windows-latest'
+    dependsOn: QABuildInfrastructureDeployment
+    environment: 'QA'
+    strategy:
+      runOnce:
+        deploy:
+          steps:         
+          - template: ./3-code-deployment.yml
+            parameters:
+              BranchName: 'Qa'
+              ProductName: ${{ parameters.ProductName }}
+              ServicePrincipalName: ${{ parameters.ServicePrincipalName }}
+              Location: 'East US'
+              Environment: 'QA'
+  
+- stage: QAapprovalStage
+  displayName: QA Approved
+  dependsOn: DeployQAStage
+  jobs:
+  - deployment: QAapproval
+    displayName: QA Approved
+    pool:
+      vmImage: 'windows-latest'
+    environment: 'QA Approved'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - script: echo Approved for production
+
+# ##################################################################################################################################
+
+# - stage: DeployDemoStage
+#   dependsOn:
+#   - QAapprovalStage
+#   jobs:
+#   - deployment: DemoBuildInfrastructureDeployment
+#     pool:
+#         vmImage: 'ubuntu-latest'
+#     environment: 'Demo'
+#     strategy:
+#       runOnce:
+#         deploy:
+#           steps:
+#           - template: ./2-build-infrastructure.yml
+#             parameters:
+#               BranchName: 'Demo'
+#               ProductName: ${{ parameters.ProductName }}
+#               ServicePrincipalName: ${{ parameters.ServicePrincipalName }}
+#               Location: 'Central US'
+#               Environment: 'Demo'
+#               AppInsightsKey: '77777777-7777-7777-7777-777777777777'
+#               dbSkuName: 'GP_S_Gen5_4'
+
+#   - deployment: DemoCodeDeployDeployment
+#     pool:
+#         vmImage: 'windows-latest'
+#     dependsOn: DemoBuildInfrastructureDeployment
+#     environment: Demo
+#     strategy:
+#       runOnce:
+#         deploy:
+#           steps:
+#           - template: ./3-code-deployment.yml
+#             parameters:
+#               BranchName: 'Demo'
+#               ProductName: ${{ parameters.ProductName }}
+#               ServicePrincipalName: ${{ parameters.ServicePrincipalName }}
+#               Location: 'Central US'
+#               Environment: 'Demo'
+
+#   - deployment: DemoAutomatedUITestsJob
+#     pool:
+#       vmImage: 'ubuntu-latest'
+#     dependsOn: DemoCodeDeployDeployment
+#     environment: 'Demo'
+#     strategy:
+#       runOnce:
+#         deploy:
+#           steps:         
+#           - template: ./4-automated-ui-tests.yml
+#             parameters:
+#               BranchName: 'Demo'
+#               ProductName: ${{ parameters.ProductName }}
+#               ServicePrincipalName: ${{ parameters.ServicePrincipalName }}
+#               Location: 'Central US'
+#               Environment: 'Demo'
+
+# ##################################################################################################################################
+
+# - stage: ProductionReady
+#   displayName: Production Ready
+#   dependsOn: QAapprovalStage
+#   jobs:
+#   - deployment: Deploy_Environment
+#     displayName: Production Ready
+#     pool:
+#       vmImage: 'windows-latest'
+#     environment: 'Production Ready'
+#     strategy:
+#       runOnce:
+#         deploy:
+#           steps:
+#           - script: echo Production Ready
+
+# - stage: DeployProductionStage
+#   dependsOn:
+#   - ProductionReady
+#   jobs:
+#   - deployment: ProdBuildInfrastructureDeployment
+#     pool:
+#       vmImage: 'ubuntu-latest'
+#     environment: 'Production'
+#     strategy:
+#       runOnce:
+#         deploy:
+#           steps:
+#           - template: ./2-build-infrastructure.yml
+#             parameters:
+#               BranchName: 'Prod'
+#               ProductName: ${{ parameters.ProductName }}
+#               ServicePrincipalName: ${{ parameters.ServicePrincipalName }}
+#               Location: 'North Central US'
+#               Environment: 'Production'
+#               AppInsightsKey: '77777777-7777-7777-7777-777777777777'
+#               dbSkuName: 'GP_S_Gen5_4'
+
+#   - deployment: ProdCodeDeployDeployment
+#     pool:
+#         vmImage: 'windows-latest'
+#     dependsOn: ProdBuildInfrastructureDeployment
+#     environment: 'Production'
+#     strategy:
+#       runOnce:
+#         deploy:
+#           steps:
+#           - template: ./3-code-deployment.yml
+#             parameters:
+#               BranchName: 'Prod'
+#               ProductName: ${{ parameters.ProductName }}
+#               ServicePrincipalName: ${{ parameters.ServicePrincipalName }}
+#               Location: 'North Central US'
+#               Environment: 'Production'
+
+#   - deployment: ProdAutomatedUITestsJob
+#     pool:
+#       vmImage: 'ubuntu-latest'
+#     dependsOn: ProdCodeDeployDeployment
+#     environment: 'Production'
+#     strategy:
+#       runOnce:
+#         deploy:
+#           steps:         
+#           - template: ./4-automated-ui-tests.yml
+#             parameters:
+#               BranchName: 'Prod'
+#               ProductName: ${{ parameters.ProductName }}
+#               ServicePrincipalName: ${{ parameters.ServicePrincipalName }}
+#               Location: 'North Central US'
+#               Environment: 'Production'

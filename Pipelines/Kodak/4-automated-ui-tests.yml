@@ -1,0 +1,177 @@
+#region params
+parameters:
+- name: 'BranchName'
+  type: string
+  default: 'defaultBranchName'
+- name: 'ProductName'
+  type: string
+  default: 'defaultProductName'
+- name: 'ServicePrincipalName'
+  type: string
+  default: 'defaultServicePrincipalName'
+- name: 'Location'
+  type: string
+  default: 'defaultLocation'
+- name: 'Environment'
+  type: string
+  default: 'defaultEnvironment'
+#endregion
+
+steps:
+
+#i think we need to checkout the code in order for the dotnet steps to actually see the csproj files right? otherwise we would have to download an artifact
+#- checkout: none
+
+#region download tasks
+- checkout: TrajectAutomatedUITestsRepo
+  path: ./TrajectAutomatedUITests
+
+- download: current
+  artifact: PipelinesTrajectArtifact
+
+- task: DownloadPipelineArtifact@2
+  inputs:
+    artifact: Migrations
+    downloadPath: $(Pipeline.Workspace)/Migrations
+#endregion
+
+#show initial directories and such for debugging
+- task: CmdLine@2
+  displayName: Show incoming params and directories - CmdLineTask
+  inputs:
+    script: |
+      echo Hello World
+      echo BranchName: ${{ parameters.BranchName }}
+      echo ProductName: ${{ parameters.ProductName }}
+      echo SerivcePrincipalName: ${{ parameters.ServicePrincipalName }}
+      echo Location: ${{ parameters.Location }}
+      echo Environment: ${{ parameters.Environment }}
+      echo heres what we see
+      echo --------------------------------------------------------------
+      dir
+      echo --------------------------------------------------------------
+      echo show contents of TrajectAutomatedUITests
+      echo --------------------------------------------------------------
+      cd TrajectAutomatedUITests
+      dir
+      echo --------------------------------------------------------------
+      echo done with cmdlinetask     
+
+#define prefix - this powershell will set global variables we can use&reference elsewhere
+- task: AzurePowerShell@4
+  name: env
+  displayName: 'Define prefix - AzurePowershell task'
+  inputs:
+    azureSubscription: ${{ parameters.ServicePrincipalName }}
+    ScriptType: filePath
+    scriptPath: $(Pipeline.Workspace)/PipelinesTrajectArtifact/Powershell/PrefixDefine.ps1
+    scriptArguments: -environment '${{ parameters.Environment }}' -branchname ${{ parameters.BranchName }}
+    azurePowerShellVersion: LatestVersion
+
+#show some of the variables we've just been setting up
+- pwsh:
+    Write-Host "here is your (env.ResourceId) - $(env.ResourceId) ||"
+    Write-Host "here is your (env.automatedUITestingPrefix) - $(env.automatedUITestingPrefix)"
+    Write-Host "here is your (env.behaveParallelParams) - $(env.behaveParallelParams)"
+    Write-Host "here is your new (env.logArtifactName) - $(env.logArtifactName) ||"
+    Write-Host "here is your new (env.screenshotArtifactName) - $(env.screenshotArtifactName)"
+
+#start the same commands/steps that were in the previous pipeline - in this case bash script to setup agent environment pre-reqs
+- task: Bash@3
+  displayName: 'Build Test Dependencies and Virtual Environment'
+  inputs:
+    targetType: filePath
+    filePath: '$(Pipeline.Workspace)/TrajectAutomatedUITests/createTestingEnvironment.sh'
+    workingDirectory: '$(Pipeline.Workspace)/TrajectAutomatedUITests'
+
+- script: |
+    echo here is your present working directory
+    echo --------------------------------------
+    pwd
+    echo --------------------------------------
+    echo now run ls
+    echo --------------------------------------
+    ls
+    echo --------------------------------------
+    echo cd into /home/vsts/ - then pwd again
+    echo --------------------------------------
+    cd /home/vsts
+    pwd
+    echo --------------------------------------
+    echo mkdir to create log directory
+    echo --------------------------------------
+    mkdir log
+    echo --------------------------------------
+    echo now run ls
+    echo --------------------------------------
+    ls
+    echo --------------------------------------
+    echo done with Create Log Directory task
+  displayName: 'Create Log Directory'
+  workingDirectory: '$(Pipeline.Workspace)/TrajectAutomatedUITests'
+  continueOnError: true
+
+- script: |
+    echo "here is your env.resourceid - $(env.ResourceId)"
+    echo "here is your env.automatedUITestingPrefix - $(env.automatedUITestingPrefix)"
+    echo "here is your env.behaveParallelParams - $(env.behaveParallelParams)"
+  
+    shortenedEnvironment=$(env.ResourceId)
+
+    export url="https://$shortenedEnvironment-traject.azurewebsites.net"
+    export environment="$(env.automatedUITestingPrefix)"
+    export driver="chrome"
+    export headless="1"
+    export behaveparallelparams="$(env.behaveParallelParams)"
+
+    echo "url: $url"
+    echo "environment: $environment"
+    echo "driver: $driver"
+    echo "headless: $headless"
+    echo "behaveparallelparams: $behaveparallelparams"
+   
+    source venv/bin/activate
+    python ./behave_parallel.py $behaveparallelparams
+  displayName: 'Run Parallel Tests in Chrome'
+  workingDirectory: '$(Pipeline.Workspace)/TrajectAutomatedUITests'
+  continueOnError: true
+
+#publish robs new log dir that we just created - im assuming the test job above drops some stuff in here
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: '/home/vsts/log' # Required 
+    artifactName: '$(env.logArtifactName)' # Optional
+    artifactType: 'pipeline' # Required. Options: pipeline, filepath. Default value: pipeline
+
+#try publishing screenshots dir for rob as well
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: '$(System.DefaultWorkingDirectory)/screenshots' # Required 
+    artifactName: '$(env.screenshotArtifactName)' # Optional
+    artifactType: 'pipeline' # Required. Options: pipeline, filepath. Default value: pipeline
+
+- powershell: |
+    Write-Host "show pipeline.workspace: $(Pipeline.Workspace)"
+    Write-Host "show system.defaultworkingdirectory: $(System.DefaultWorkingDirectory)"
+    Write-Host "show current dir with Get-ChildItem"
+    Write-Host "-------------------------------------------"
+    Get-ChildItem
+    Write-Host "-------------------------------------------"
+
+    foreach ($file in (Get-ChildItem -Path "$(System.DefaultWorkingDirectory)/screenshots" -Filter *.PNG -Recurse))
+    {
+      Write-Host "Release: Uploading $($file.FullName)"
+      Write-Host "##vso[task.uploadfile]$($file.FullName)"
+    }
+    Write-Host "done running powershell task"
+  errorActionPreference: continue
+  displayName: 'Upload Screenshots Powershell Task'
+
+- task: PublishTestResults@2
+  displayName: 'Publish Test Results **/TESTS-*.xml'
+  inputs:
+    testResultsFormat: 'JUnit'
+    testResultsFiles: '**/TESTS-*.xml'
+    searchFolder: '$(System.DefaultWorkingDirectory)/reports'
+    mergeTestResults: true
+    condition: succeededOrFailed()

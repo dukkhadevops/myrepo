@@ -1,0 +1,181 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "deployPrefix": {
+            "metadata": {
+                "description": "The unique identifier placed at the begining of each resource"
+            },
+            "type": "string",
+            "maxLength": 11
+        },
+        "environment": {
+            "metadata": {
+                "description": "Identify the code level environment for the deployment. (qa, production, etc)"
+            },
+            "type": "string",
+            "defaultValue": "development"
+        },
+        "productname": {
+            "metadata": {
+                "description": "identifier for each project/product"
+            },
+            "type": "string"
+        },
+        "adminsecret": {
+            "metadata": {
+                "description": "Password used by admin"
+            },
+            "type": "string",
+            "defaultValue": "7777777777"
+        },
+        "dbskuname": {
+            "metadata": {
+                "description": "sku name for the database"
+            },
+            "type": "string",
+            "defaultValue": "S0"
+        },
+        "dbskutier": {
+            "metadata": {
+                "description": "sku tier for the database"
+            },
+            "type": "string",
+            "defaultValue": "Standard"
+        },
+        "prbuild": {
+            "metadata": {
+                "description": "if true then use as a condition to build storage accounts & blob. if false then do not build because we'll be using existing resources built in templates elsewhere"
+            },
+            "type": "string",
+            "defaultValue": "junkdefaultvalue"
+        },
+    },
+    "variables": {
+        "sqlserver_name": "[toLower(concat(parameters('deployPrefix'), '-', Parameters('productname'), '-sqlserver'))]",
+        "database_name": "traject",
+        "integrationtests_dbname": "traject_integrationtests"
+
+    },
+    "resources": [       
+        {
+            "type": "Microsoft.Sql/servers",
+            "apiVersion": "2020-02-02-preview",
+            "name": "[variables('sqlserver_name')]",
+            "location": "[resourceGroup().location]",
+            "tags": {
+                "DeploymentName": "[parameters('deployPrefix')]",
+                "Environment": "[parameters('environment')]",
+                "ProductName": "[parameters('productname')]",
+                "Project": "[parameters('productname')]",
+                "Application": "[parameters('productname')]"
+            },
+            "properties": {
+                "administratorLogin": "admin",
+                "administratorLoginPassword": "[parameters('adminsecret')]"
+            },
+            "resources": [
+                {
+                    "type": "databases",
+                    "apiVersion": "2020-08-01-preview",
+                    "name": "[variables('database_name')]",
+                    "location": "[resourceGroup().location]",
+                    "tags": {
+                        "DeploymentName": "[parameters('deployPrefix')]",
+                        "Environment": "[parameters('environment')]",
+                        "ProductName": "[parameters('productname')]",
+                        "Project": "[parameters('productname')]",
+                        "Application": "[parameters('productname')]"
+                    },
+                    "sku": {
+                        "name": "[parameters('dbskuname')]"
+                    },
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Sql/servers', concat(variables('sqlserver_name')))]"
+                    ],
+                    "kind": "v12.0,user,vcore,serverless",
+                    "properties": {
+                        "collation": "SQL_Latin1_General_CP1_CI_AS",
+                        "maxSizeBytes": 34359738368,
+                        "catalogCollation": "SQL_Latin1_General_CP1_CI_AS",
+                        "zoneRedundant": false,
+                        "readScale": "Disabled",
+                        "autoPauseDelay": -1,
+                        "storageAccountType": "GRS",
+                        "minCapacity": 0.5
+                    }
+                },
+                {
+                    "condition": "[not(or(equals(parameters('deployPrefix'),'QA'), equals(parameters('deployPrefix'),'DEMO'), equals(parameters('deployPrefix'),'PROD')))]",
+                    "type": "databases",
+                    "apiVersion": "2020-08-01-preview",
+                    "name": "[variables('integrationtests_dbname')]",
+                    "location": "[resourceGroup().location]",
+                    "tags": {
+                        "DeploymentName": "[parameters('deployPrefix')]",
+                        "Environment": "[parameters('environment')]",
+                        "ProductName": "[parameters('productname')]",
+                        "Project": "[parameters('productname')]",
+                        "Application": "[parameters('productname')]"
+                    },
+                    "sku": {
+                        "name": "[parameters('dbskuname')]"
+                    },
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Sql/servers', concat(variables('sqlserver_name')))]"
+                    ],
+                    "kind": "v12.0,user,vcore,serverless",
+                    "properties": {
+                        "collation": "SQL_Latin1_General_CP1_CI_AS",
+                        "maxSizeBytes": 34359738368,
+                        "catalogCollation": "SQL_Latin1_General_CP1_CI_AS",
+                        "zoneRedundant": false,
+                        "readScale": "Disabled",
+                        "autoPauseDelay": -1,
+                        "storageAccountType": "GRS",
+                        "minCapacity": 0.5
+                    }
+                }
+            ]
+        },
+        {
+            "type": "Microsoft.Sql/servers/administrators",
+            "apiVersion": "2014-04-01-preview",
+            "name": "[concat(variables('sqlserver_name'), '/ActiveDirectory')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', variables('sqlserver_name'))]"
+            ],
+            "properties": {
+                "administratorType": "ActiveDirectory",
+                "login": "aadadmin@vantagepointlogistics.com",
+                "sid": "77777777-7777-7777-7777-777777777777",
+                "tenantId": "77777777-7777-7777-7777-777777777777"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/firewallRules",
+            "apiVersion": "2015-05-01-preview",
+            "name": "[concat(variables('sqlserver_name'), '/AllowAllWindowsAzureIps')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', variables('sqlserver_name'))]"
+            ],
+            "properties": {
+                "startIpAddress": "0.0.0.0",
+                "endIpAddress": "0.0.0.0"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/firewallRules",
+            "apiVersion": "2015-05-01-preview",
+            "name": "[concat(variables('sqlserver_name'), '/Local Office')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', variables('sqlserver_name'))]"
+            ],
+            "properties": {
+                "startIpAddress": "1.1.111.1",
+                "endIpAddress": "1.1.111.1"
+            }
+        }
+    ]   
+}
