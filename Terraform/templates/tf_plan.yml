@@ -28,8 +28,8 @@ steps:
       command: "init"
       commandOptions: "-input=false"
       backendServiceArm: ${{parameters.serviceConnectionName}} # service connection must be known at yaml compile time, so it has to be either hardcoded or a parameter - variables won't work
-      backendAzureRmResourceGroupName: "cl-rg-infra-$(environment)-${{parameters.region}}-tfstate"
-      backendAzureRmStorageAccountName: "clstinfra$(environment)${{parameters.region}}tfstate"
+      backendAzureRmResourceGroupName: "rg-infra-$(environment)-${{parameters.region}}-tfstate"
+      backendAzureRmStorageAccountName: "stinfra$(environment)${{parameters.region}}tfstate"
       backendAzureRmContainerName: tfstate
       backendAzureRmKey: ${{parameters.tfStateFileKey}} # state file key changes depending on the component, so it's easier to make this a parameter rather than referencing a var group variable
       workingDirectory: ${{parameters.workingDirectory}}
@@ -54,20 +54,3 @@ steps:
       targetPath: ${{parameters.workingDirectory}}
       artifact: "tf_workspace_$(environment)_${{parameters.component}}_${{parameters.region}}"
       publishLocation: "pipeline"
-
-  - task: PowerShell@2
-    displayName: "Write Pull Request Comment"
-    condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))
-    inputs:
-      targetType: "filePath"
-      filePath: ./scripts/pr_comment.ps1
-      workingDirectory: ${{parameters.workingDirectory}}
-    env:
-      SYSTEM_ACCESSTOKEN: $(System.AccessToken)
-      SYSTEM_TEAMPROJECT: $(System.TeamProject)
-      SYSTEM_PULLREQUEST_ID: $(System.PullRequest.PullRequestId)
-      BUILD_REPOSITORY_ID: $(Build.Repository.ID)
-      BUILD_BUILDNUMBER: $(Build.BuildNumber)
-      ENVIRONMENT: $(environment)
-      COMPONENT: ${{parameters.component}}
-      REGION: ${{parameters.region}}
