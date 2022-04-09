@@ -1,0 +1,73 @@
+parameters:
+- name: serviceConnectionName
+  type: string
+- name: tfStateFileKey
+  type: string
+- name: component
+  type: string
+- name: workingDirectory
+  type: string
+- name: region
+  type: string
+
+steps:       
+  - task: TerraformInstaller@0
+    displayName: "Install Terraform"
+    inputs:
+      terraformVersion: $(terraformVersion) # Variable from variable group
+
+  - script: |
+      git config --global http.extraheader "AUTHORIZATION: bearer $(System.AccessToken)"
+    displayName: "Git config"
+
+  - task: TerraformCLI@0
+    displayName: "Terraform Init"
+    inputs:
+      allowTelemetryCollection: false
+      backendType: "azurerm"
+      command: "init"
+      commandOptions: "-input=false"
+      backendServiceArm: ${{parameters.serviceConnectionName}} # service connection must be known at yaml compile time, so it has to be either hardcoded or a parameter - variables won't work
+      backendAzureRmResourceGroupName: "cl-rg-infra-$(environment)-${{parameters.region}}-tfstate"
+      backendAzureRmStorageAccountName: "clstinfra$(environment)${{parameters.region}}tfstate"
+      backendAzureRmContainerName: tfstate
+      backendAzureRmKey: ${{parameters.tfStateFileKey}} # state file key changes depending on the component, so it's easier to make this a parameter rather than referencing a var group variable
+      workingDirectory: ${{parameters.workingDirectory}}
+
+  - script: "terraform workspace select $(environment) || terraform workspace new $(environment)"
+    displayName: "Select Workspace"
+    workingDirectory: ${{parameters.workingDirectory}}
+
+  - task: TerraformCLI@0
+    displayName: "Terraform Plan"
+    inputs:
+      allowTelemetryCollection: false
+      backendType: "azurerm"
+      command: "plan"
+      commandOptions: "-var-file=${{parameters.region}}.tfvars -input=false -out=$(Build.BuildNumber)_$(environment)_${{parameters.component}}_${{parameters.region}}.tfplan"
+      environmentServiceName: ${{parameters.serviceConnectionName}}
+      workingDirectory: ${{parameters.workingDirectory}}
+      publishPlanResults: $(environment)_${{parameters.component}}_${{parameters.region}}
+
+  - task: PublishPipelineArtifact@1
+    inputs:
+      targetPath: ${{parameters.workingDirectory}}
+      artifact: "tf_workspace_$(environment)_${{parameters.component}}_${{parameters.region}}"
+      publishLocation: "pipeline"
+
+  - task: PowerShell@2
+    displayName: "Write Pull Request Comment"
+    condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))
+    inputs:
+      targetType: "filePath"
+      filePath: ./scripts/pr_comment.ps1
+      workingDirectory: ${{parameters.workingDirectory}}
+    env:
+      SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+      SYSTEM_TEAMPROJECT: $(System.TeamProject)
+      SYSTEM_PULLREQUEST_ID: $(System.PullRequest.PullRequestId)
+      BUILD_REPOSITORY_ID: $(Build.Repository.ID)
+      BUILD_BUILDNUMBER: $(Build.BuildNumber)
+      ENVIRONMENT: $(environment)
+      COMPONENT: ${{parameters.component}}
+      REGION: ${{parameters.region}}

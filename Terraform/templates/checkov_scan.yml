@@ -1,0 +1,24 @@
+parameters:
+- name: workingDirectory
+  type: string
+
+steps:
+  - bash: |
+      docker pull bridgecrew/checkov
+    workingDirectory: "${{parameters.workingDirectory}}"
+    displayName: "Pull > bridgecrew/checkov"
+
+  - bash: |
+      docker run --volume ${{parameters.workingDirectory}}:/tf bridgecrew/checkov --directory /tf --output junitxml --soft-fail > ${{parameters.workingDirectory}}/CheckovReport.xml
+    workingDirectory: "${{parameters.workingDirectory}}"
+    displayName: "Run > checkov"
+
+  - task: PublishTestResults@2
+    displayName: "Publish > Checkov scan results"
+    condition: succeededOrFailed()
+    inputs:
+      testRunTitle: Checkov Results
+      failTaskOnFailedTests: false
+      testResultsFormat: JUnit
+      testResultsFiles: CheckovReport.xml
+      searchFolder: "${{parameters.workingDirectory}}"

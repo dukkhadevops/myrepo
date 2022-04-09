@@ -1,0 +1,133 @@
+trigger:
+  batch: true # batch changes so builds run one-at-a-time
+  branches:
+    include:
+    - main
+    - develop
+    - feature/*
+    - fix/*
+  paths:
+    include:
+    - core-infra/
+
+pool:
+  vmImage: windows-latest
+
+variables:
+  isMain: $[eq(variables['Build.SourceBranch'], 'refs/heads/main')]
+  subdirWorkingDirectory: $(System.DefaultWorkingDirectory)/core-infra #this is generally the subdirectory you're working in
+  terraformVersion: 0.14.7
+
+stages:
+  - stage: checkov_scan
+    displayName: "Checkov - Scan Terraform Files"
+    pool:
+      vmImage: 'ubuntu-latest'
+    jobs:
+      - job: run_checkov_in_docker
+        steps:
+          - template: ../templates/checkov_scan.yml
+            parameters:
+              workingDirectory: $(subdirWorkingDirectory)
+
+  - stage: plan_dev
+    variables:
+      environment: dev
+    dependsOn: [checkov_scan]
+    jobs:
+      - job: core_infra_dev_plan
+        steps:
+          - template: ../templates/tf_plan.yml
+            parameters:
+              serviceConnectionName: mySPN-serviceConnection-dev
+              tfStateFileKey: core-infra
+              component: core
+              workingDirectory: $(subdirWorkingDirectory)
+              region: eus
+
+  - stage: plan_uat
+    variables:
+      environment: uat
+    dependsOn: [checkov_scan]
+    jobs:
+      - job: core_infra_uat_plan
+        steps:
+          - template: ../templates/tf_plan.yml
+            parameters:
+              serviceConnectionName: mySPN-serviceConnection-uat
+              tfStateFileKey: core-infra
+              component: core
+              workingDirectory: $(subdirWorkingDirectory)
+              region: eus
+
+  - stage: plan_prod
+    variables:
+      environment: prod
+    dependsOn: [checkov_scan]
+    jobs:
+      - job: core_infra_prod_plan
+        steps:
+          - template: ../templates/tf_plan.yml
+            parameters:
+              serviceConnectionName: mySPN-serviceConnection-prod
+              tfStateFileKey: core-infra
+              component: core
+              workingDirectory: $(subdirWorkingDirectory)
+              region: eus
+
+  - stage: apply_dev
+    condition: and(succeeded(), eq(variables.isMain, false))
+    variables:
+      environment: dev
+    dependsOn: [plan_dev] # Specify stage name where new job will be dependent on
+    jobs:
+      - deployment:
+        displayName: core_infra_apply_dev
+        environment: dev # Create dev/prod/uat under: Azure DevOps -> Pipeline -> Environment
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - template: ../templates/tf_apply.yml
+                  parameters:
+                    serviceConnectionName: mySPN-serviceConnection-dev
+                    component: core
+                    region: eus
+
+  - stage: apply_uat
+    condition: and(succeeded(), eq(variables.isMain, true))
+    variables:
+      environment: uat
+    dependsOn: [plan_uat] # Specify stage name where new job will be dependent on
+    jobs:
+      - deployment:
+        displayName: core_infra_apply_uat
+        environment: uat # Create dev/prod/uat under: Azure DevOps -> Pipeline -> Environment
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - template: ../templates/tf_apply.yml
+                  parameters:
+                    serviceConnectionName: mySPN-serviceConnection-uat
+                    component: core
+                    region: eus
+
+  - stage: apply_prod
+    condition: and(succeeded(), eq(variables.isMain, true))
+    variables:
+      environment: prod
+    dependsOn: [plan_prod] # Specify stage name where new job will be dependent on
+    jobs:
+      - deployment:
+        displayName: core_infra_apply_prod
+        environment: prod # Create dev/prod under: Azure DevOps -> Pipeline -> Environment
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - template: ../templates/tf_apply.yml
+                  parameters:
+                    serviceConnectionName: mySPN-serviceConnection-prod
+                    component: core
+                    region: eus
