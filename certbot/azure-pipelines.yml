@@ -1,0 +1,121 @@
+#just replace contoso.com with what you want to run against
+
+pool:
+  vmImage: ubuntu-latest
+
+trigger: none
+
+schedules:
+- cron: "0 0 25 * *"
+  displayName: Run every 25th of the month
+  branches:
+    include:
+    - main
+  always: true
+
+parameters:
+  - name: renew
+    type: boolean
+    default: false
+  - name: dry_run
+    type: boolean
+    default: false
+
+variables:
+  - group: "certbot"
+  - ${{ if eq(parameters.dry_run, true) }}:
+    - name: dry_run
+      value: "--dry-run"
+  - ${{ if eq(parameters.dry_run, false) }}:
+    - name: dry_run
+      value: ""
+jobs:
+  - job: Run
+    steps:
+      - script: |
+          sudo snap install certbot --classic
+          certbot --version
+          openssl version
+        displayName: Install prerequisites
+
+      - ${{ if eq(parameters.renew, false) }}:
+        - script: |
+            certbot certonly \
+              -d contoso.com \
+              --agree-tos \
+              --register-unsafely-without-email \
+              --manual \
+              --manual-auth-hook ./cf-update.sh \
+              --manual-cleanup-hook ./cf-clean.sh \
+              --preferred-challenges dns \
+              --config-dir . \
+              --work-dir . \
+              --logs-dir . $(dry_run)
+          displayName: Generate certificate
+          env:
+            CF_API_TOKEN: $(cloudflare-api-token)
+
+      - ${{ if eq(parameters.renew, true) }}:
+        - script: |
+            mkdir -p live/contoso.com
+            mkdir -p archive/contoso.com
+            mkdir renewal
+            echo $(fullchain-pem) | base64 -d > ./archive/contoso.com/fullchain1.pem && ln -s ../../archive/contoso.com/fullchain1.pem ./live/contoso.com/fullchain.pem 
+            echo $(privkey-pem) | base64 -d > ./archive/contoso.com/privkey1.pem && ln -s ../../archive/contoso.com/privkey1.pem ./live/contoso.com/privkey.pem
+            echo $(chain-pem) | base64 -d > ./archive/contoso.com/chain1.pem && ln -s ../../archive/contoso.com/chain1.pem ./live/contoso.com/chain.pem
+            echo $(cert-pem) | base64 -d > ./archive/contoso.com/cert1.pem && ln -s ../../archive/contoso.com/cert1.pem ./live/contoso.com/cert.pem
+            echo $(contoso-com-conf) | base64 -d > ./renewal/contoso.com.conf
+          displayName: Retrieve old cert and config from key vault
+
+      - ${{ if eq(parameters.renew, true) }}:
+        - script: |
+            cat ./renewal/contoso.com.conf
+            certbot renew \
+              --agree-tos \
+              --register-unsafely-without-email \
+              --force-renewal \
+              --config-dir . \
+              --work-dir . \
+              --logs-dir . $(dry_run)
+          displayName: Renew certificate
+          env:
+            CF_API_TOKEN: $(cloudflare-api-token)
+
+      - task: AzureCLI@2
+        displayName: Save new cert and config to key vault
+        inputs:
+          azureSubscription: SPN-contoso
+          scriptType: bash  
+          scriptLocation: inlineScript
+          inlineScript: |
+            az keyvault secret set --vault-name cl-kv-infra-prod-001 --name "fullchain-pem" --value $(cat ./live/contoso.com/fullchain.pem | base64 -w0)
+            az keyvault secret set --vault-name cl-kv-infra-prod-001 --name "privkey-pem" --value $(cat ./live/contoso.com/privkey.pem | base64 -w0)
+            az keyvault secret set --vault-name cl-kv-infra-prod-001 --name "chain-pem" --value $(cat ./live/contoso.com/chain.pem | base64 -w0)
+            az keyvault secret set --vault-name cl-kv-infra-prod-001 --name "cert-pem" --value $(cat ./live/contoso.com/cert.pem | base64 -w0)
+            az keyvault secret set --vault-name cl-kv-infra-prod-001 --name "contoso-com-conf" --value $(cat ./renewal/contoso.com.conf | base64 -w0)
+
+      - script: |
+          openssl pkcs12 \
+            -inkey ./live/contoso.com/privkey.pem \
+            -in ./live/contoso.com/fullchain.pem \
+            -export \
+            -out contoso-com.pfx \
+            -passout pass:
+        displayName: Convert .pem to .pfx
+
+      - task: AzureCLI@2
+        displayName: Upload to .pfx to key vault
+        inputs:
+          azureSubscription: SPN-contoso
+          scriptType: bash
+          scriptLocation: inlineScript
+          inlineScript: |
+            az keyvault certificate import --vault-name cl-kv-infra-prod-001 -n contoso-com -f ./contoso-com.pfx
+
+      - script: |
+          echo "Old cert expiration date:"
+          echo | openssl s_client -connect contoso.com:443 2>/dev/null | openssl x509 -noout -dates | grep notAfter | cut -d'=' -f2
+          echo "New cert expiration date:"
+          openssl x509 -enddate -noout -in ./live/contoso.com/fullchain.pem | cut -d'=' -f2
+          echo "Note: it takes up to 24 hours for the new version of the certificate to be deployed. Source: https://docs.microsoft.com/en-us/azure/frontdoor/front-door-custom-domain-https#select-the-certificate-for-azure-front-door-to-deploy"
+        displayName: Old and new cert expiration dates
