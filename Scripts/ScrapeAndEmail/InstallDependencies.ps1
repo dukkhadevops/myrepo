@@ -127,8 +127,9 @@ function Download-GitHubFiles {
         $destinationFile = Join-Path $DestinationDirectory $fileName
 
         $response = Invoke-RestMethod -Uri "https://raw.githubusercontent.com/$RepoOwner/$RepoName/master/$url"
-        $decodedContent = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($response.content))
-        $decodedContent | Set-Content -Path $destinationFile
+        #$decodedContent = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($response.content))
+        #$decodedContent | Set-Content -Path $destinationFile
+        $response | Set-Content -Path $destinationFile
     }
 
     Write-Host "Files from $Path downloaded successfully to $DestinationDirectory."
