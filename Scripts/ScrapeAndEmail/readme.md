@@ -14,6 +14,7 @@
 2) double click to run it
 3) at the top of ScrapeAndEmail.ps1 & CreateScheduledTask.ps1 there is a reference to a values.txt file
 4) values.txt file needs to be in the correct location & updated with all relevant info
+5) due to python code you cannot have empty lines in values.txt
 ```
 
 ## install.bat

@@ -1,8 +1,18 @@
 $whereToInstall = "C:\AutomatedReportDownloader"
+$reportDirectory = Join-Path $whereToInstall "reports"
 $installDependenciesLogFile = $whereToInstall + "\installDependenciesLog.txt"
 
-# Gecko - URL of the zip file to download
-$zipUrl = "https://github.com/mozilla/geckodriver/releases/download/v0.33.0/geckodriver-v0.33.0-win64.zip"
+# Web Drivers - URL of the zip file to download
+#$zipUrl = "https://github.com/mozilla/geckodriver/releases/download/v0.33.0/geckodriver-v0.33.0-win64.zip"
+$chromeDriver = "https://sites.google.com/a/chromium.org/chromedriver/downloads"
+#$zipUrl = "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/115.0.5790.102/win64/chrome-win64.zip"
+$zipUrl = "http://chromedriver.storage.googleapis.com/114.0.5735.90/chromedriver_win32.zip"
+$chrome = "https://dl.google.com/edgedl/chrome/install/GoogleChromeStandaloneEnterprise64.msi"
+
+# Python
+#$pythonZip = "https://www.python.org/ftp/python/3.11.4/python-3.11.4-embed-amd64.zip"  #didnt seem to work
+$pythonInstall = "https://www.python.org/ftp/python/3.11.4/python-3.11.4-amd64.exe"
+
 # GitHub repository details
 $repoUrl = "https://github.com/dukkhadevops/myrepo/tree/master/Scripts/ScrapeAndEmail"
 $repoOwner = "dukkhadevops"
@@ -18,6 +28,7 @@ if (-not (Test-Path -Path $whereToInstall -PathType Container)) {
     Write-Host "Directory does not exist. Creating the directory..."
     try {
         New-Item -Path $whereToInstall -ItemType Directory -Force
+        New-Item -Path $reportDirectory -ItemType Directory -Force
         Write-Host "Directory created successfully."
     } catch {
         Write-Host "Failed to create the directory: $_"
@@ -74,18 +85,35 @@ if (-not (Get-Module -Name Selenium -ListAvailable)) {
 ###############################
 
 ###############################
-#region Install Gecko Driver
+#region Install Web Driver
 ###############################
 # Download the zip file
-$zipFile = Join-Path $whereToInstall "geckodriver.zip"
+$zipFile = Join-Path $whereToInstall "webdriver.zip"
 Invoke-WebRequest -Uri $zipUrl -OutFile $zipFile
 
 # Extract the contents of the zip file
-$destinationPath = Join-Path $whereToInstall "geckodriver"
+$destinationPath = Join-Path $whereToInstall "webdriver"
 Expand-Archive -Path $zipFile -DestinationPath $destinationPath -Force
 
 # Optional: Remove the downloaded zip file (uncomment the line below if you want to delete it)
 # Remove-Item -Path $zipFile -Force
+###############################
+#endregion
+###############################
+
+###############################
+#region Python install
+###############################
+# Download the zip file
+$File = Join-Path $whereToInstall "pythoninstall.exe"
+Invoke-WebRequest -Uri $pythonInstall -OutFile $File
+
+#call the exe with args
+#python-3.9.0.exe /quiet InstallAllUsers=1 PrependPath=1 Include_test=0
+$arguments = '/quiet', 'InstallAllUsers=1', 'PrependPath=1', 'Include_test=0'
+
+Start-Process -FilePath $File -ArgumentList $arguments
+
 ###############################
 #endregion
 ###############################
