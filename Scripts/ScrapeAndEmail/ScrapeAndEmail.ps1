@@ -1,11 +1,3 @@
-#TODO - run browser in background
-#TODO - readme on where & how to install geckodriver
-#TODO - readme on making sure powershell & modules are up to date
-#TODO - where will we actually run this thing + scheduled task setup?
-#TODO - actually read the report - what needs changed?
-#TODO - do we want to automate cleaning up old files
-#TODO - put things in functions - log function maybe
-#TODO - parameterize smtp server & port
 
 # Specify the path to the text file
 $valuesFile = "C:\Users\Matt\Documents\values.txt"
