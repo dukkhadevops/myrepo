@@ -87,7 +87,7 @@ time.sleep(2)
 # Click the "Sign In" button
 sign_in_button = driver.find_element("xpath", "//button[contains(text(),'Sign In')]")
 sign_in_button.click()
-time.sleep(45)
+time.sleep(60)
 
 #salespage = "https://press.barnesandnoble.com/sales"   #WORKS!
 #THIS ALSO WORKS
