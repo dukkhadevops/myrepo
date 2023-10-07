@@ -7,7 +7,7 @@ $installDependenciesLogFile = $whereToInstall + "\installDependenciesLog.txt"
 $chromeDriver = "https://sites.google.com/a/chromium.org/chromedriver/downloads"
 #$zipUrl = "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/115.0.5790.102/win64/chrome-win64.zip"
 $zipUrl = "http://chromedriver.storage.googleapis.com/114.0.5735.90/chromedriver_win32.zip"
-$chrome = "https://dl.google.com/edgedl/chrome/install/GoogleChromeStandaloneEnterprise64.msi"
+$chromeEnterpriseUrl = "https://dl.google.com/edgedl/chrome/install/GoogleChromeStandaloneEnterprise64.msi"
 
 # Python
 #$pythonZip = "https://www.python.org/ftp/python/3.11.4/python-3.11.4-embed-amd64.zip"  #didnt seem to work
@@ -190,11 +190,30 @@ Write-Log $msg
 ###############################
 #region Install Chrome Enterprise
 ###############################
-$msg = "Installing Chrome Enterprise version we specifically need"
+$msg = "Downloading Chrome Enterprise version we specifically need"
 Write-Host $msg
 Write-Log $msg
 
-$chromeInstaller = "C:\AutomatedReportDownloader\googlechromestandaloneenterprise64.msi"
+# Destination path to save the downloaded file
+$destinationPath = "C:\AutomatedReportDownloader\googlechromestandaloneenterprise64.msi"
+#set a better named variable for later use
+$chromeInstaller = $destinationPath
+
+# Create a WebClient object to download the file
+$webClient = New-Object System.Net.WebClient
+
+# Download the file
+$webClient.DownloadFile($chromeEnterpriseUrl, $destinationPath)
+
+# Check if the download was successful
+if (Test-Path $destinationPath) {
+    $msg = "File downloaded successfully to $destinationPath"
+    Write-Host $msg
+    Write-Log $msg
+} else {
+    Write-Host "Download failed."
+    Write-Log "Download failed."
+}
 
 # Define the installation parameters for a verbose installation log
 $installParams = @{
@@ -225,3 +244,10 @@ if ($LASTEXITCODE -eq 0) {
 ###############################
 #endregion
 ###############################
+$msg = "----------------------------------"
+Write-Host $msg
+Write-Log $msg
+Write-Host "End of InstallDependencies.ps1"
+Write-Log "End of InstallDependencies.ps1"
+Write-Host $msg
+Write-Log $msg
