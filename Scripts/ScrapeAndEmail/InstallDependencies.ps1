@@ -168,3 +168,36 @@ Download-GitHubFiles -RepoOwner $repoOwner -RepoName $repoName -RepoPath $repoPa
 ###############################
 #endregion
 ###############################
+
+###############################
+#region Install Chrome Enterprise
+###############################
+$chromeInstaller = "C:\AutomatedReportDownloader\googlechromestandaloneenterprise64.msi"
+
+# Define the installation parameters for a verbose installation log
+$installParams = @{
+    FilePath = "msiexec.exe"
+    PassThru = $true
+    Wait = $true
+    ArgumentList = @(
+        "/i", $chromeInstaller,  # Specify the MSI file
+        "/qn",                   # Quiet mode (no UI)
+        "/norestart",            # Do not restart after installation
+        "/log",                  # Log installation progress
+        "C:\chrome_install.log"  # Path to the installation log file
+    )
+}
+
+# Install Google Chrome silently with verbose logging
+Start-Process @installParams
+
+# Check the exit code to verify the installation status
+if ($LASTEXITCODE -eq 0) {
+    Write-Host "Google Chrome installed successfully."
+} else {
+    Write-Host "Google Chrome installation failed with exit code $LASTEXITCODE."
+}
+
+###############################
+#endregion
+###############################
