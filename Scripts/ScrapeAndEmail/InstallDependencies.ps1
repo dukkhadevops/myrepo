@@ -88,12 +88,18 @@ if (-not (Get-Module -Name Selenium -ListAvailable)) {
 #region Install Web Driver
 ###############################
 # Download the zip file
+$msg = "Download and unzip webdriver"
+Write-Host $msg
+Write-Log $msg
 $zipFile = Join-Path $whereToInstall "webdriver.zip"
 Invoke-WebRequest -Uri $zipUrl -OutFile $zipFile
 
 # Extract the contents of the zip file
 $destinationPath = Join-Path $whereToInstall "webdriver"
 Expand-Archive -Path $zipFile -DestinationPath $destinationPath -Force
+$msg = "Done downloading and unzipping"
+Write-Host $msg
+Write-Log $msg
 
 # Optional: Remove the downloaded zip file (uncomment the line below if you want to delete it)
 # Remove-Item -Path $zipFile -Force
@@ -105,14 +111,19 @@ Expand-Archive -Path $zipFile -DestinationPath $destinationPath -Force
 #region Python install
 ###############################
 # Download the zip file
+$msg = "Download and unzip python"
+Write-Host $msg
+Write-Log $msg
 $File = Join-Path $whereToInstall "pythoninstall.exe"
 Invoke-WebRequest -Uri $pythonInstall -OutFile $File
 
 #call the exe with args
 #python-3.9.0.exe /quiet InstallAllUsers=1 PrependPath=1 Include_test=0
 $arguments = '/quiet', 'InstallAllUsers=1', 'PrependPath=1', 'Include_test=0'
-
 Start-Process -FilePath $File -ArgumentList $arguments
+$msg = "Done downloading and unzipping Python"
+Write-Host $msg
+Write-Log $msg
 
 ###############################
 #endregion
@@ -121,6 +132,9 @@ Start-Process -FilePath $File -ArgumentList $arguments
 ###############################
 #region Everything from Git repo
 ###############################
+$msg = "Get everything from Git Repo"
+Write-Host $msg
+Write-Log $msg
 function Get-GitHubRawFileUrls {
     param (
         [string]$RepoOwner,
@@ -165,6 +179,10 @@ function Download-GitHubFiles {
 
 Download-GitHubFiles -RepoOwner $repoOwner -RepoName $repoName -RepoPath $repoPath -DestinationDirectory $whereToInstall
 
+$msg = "Done getting everything from Git Repo"
+Write-Host $msg
+Write-Log $msg
+
 ###############################
 #endregion
 ###############################
@@ -172,6 +190,10 @@ Download-GitHubFiles -RepoOwner $repoOwner -RepoName $repoName -RepoPath $repoPa
 ###############################
 #region Install Chrome Enterprise
 ###############################
+$msg = "Installing Chrome Enterprise version we specifically need"
+Write-Host $msg
+Write-Log $msg
+
 $chromeInstaller = "C:\AutomatedReportDownloader\googlechromestandaloneenterprise64.msi"
 
 # Define the installation parameters for a verbose installation log
@@ -189,13 +211,15 @@ $installParams = @{
 }
 
 # Install Google Chrome silently with verbose logging
-Start-Process @installParams
+Start-Process @installParams -Verbose
 
 # Check the exit code to verify the installation status
 if ($LASTEXITCODE -eq 0) {
     Write-Host "Google Chrome installed successfully."
+    Write-Log "Google Chrome installed successfully."
 } else {
     Write-Host "Google Chrome installation failed with exit code $LASTEXITCODE."
+    Write-Log "Google Chrome installation failed with exit code $LASTEXITCODE."
 }
 
 ###############################
