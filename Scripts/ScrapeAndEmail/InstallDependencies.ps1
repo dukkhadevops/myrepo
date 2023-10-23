@@ -1,3 +1,5 @@
+Set-ExecutionPolicy Unrestricted
+
 $whereToInstall = "C:\AutomatedReportDownloader"
 $reportDirectory = Join-Path $whereToInstall "reports"
 $installDependenciesLogFile = $whereToInstall + "\installDependenciesLog.txt"
@@ -244,6 +246,41 @@ if ($LASTEXITCODE -eq 0) {
 ###############################
 #endregion
 ###############################
+
+###############################
+#region disable Chrome updates
+###############################
+$msg = "disabling Chrome updates via registry..."
+Write-Host $msg
+Write-Log $msg
+
+# Define the Registry key and value to update
+$RegistryPath = "HKLM:\SOFTWARE\Policies\Google\Update"
+$ValueName = "AutoUpdateCheckPeriodMinutes"
+$ValueType = [Microsoft.Win32.RegistryValueKind]::DWord
+$NewValue = 0
+
+# Check if the Registry key exists, and if not, create it
+if (-not (Test-Path $RegistryPath)) {
+    New-Item -Path $RegistryPath -Force
+}
+
+# Set the Registry value
+$msg = "setting the registry value..."
+Write-Host $msg
+Write-Log $msg
+Set-ItemProperty -Path $RegistryPath -Name $ValueName -Value $NewValue -Type $ValueType
+
+# Verify the change
+$msg = "show what we set....."
+Write-Host $msg
+Write-Log $msg
+Get-ItemProperty -Path $RegistryPath -Name $ValueName
+
+###############################
+#endregion
+###############################
+
 $msg = "----------------------------------"
 Write-Host $msg
 Write-Log $msg
