@@ -1,4 +1,4 @@
-Set-ExecutionPolicy Unrestricted
+#Set-ExecutionPolicy Unrestricted
 
 $whereToInstall = "C:\AutomatedReportDownloader"
 $reportDirectory = Join-Path $whereToInstall "reports"
