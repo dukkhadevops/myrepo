@@ -2,6 +2,7 @@
 #pip install selenium-stealth
 
 from selenium import webdriver
+from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.chrome.service import Service
 from selenium_stealth import stealth
 from datetime import datetime, timedelta
@@ -87,7 +88,12 @@ time.sleep(2)
 # Click the "Sign In" button
 sign_in_button = driver.find_element("xpath", "//button[contains(text(),'Sign In')]")
 sign_in_button.click()
-time.sleep(60)
+time.sleep(30)
+
+# After the login, perform a click anywhere on the screen to deal with MFA pop up
+action_chains = ActionChains(driver)
+action_chains.move_by_offset(100, 100)  # Adjust the offset based on your needs
+action_chains.click().perform()
 
 #salespage = "https://press.barnesandnoble.com/sales"   #WORKS!
 #THIS ALSO WORKS
