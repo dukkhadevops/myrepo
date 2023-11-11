@@ -4,17 +4,6 @@ $whereToInstall = "C:\AutomatedReportDownloader"
 $reportDirectory = Join-Path $whereToInstall "reports"
 $installDependenciesLogFile = $whereToInstall + "\installDependenciesLog.txt"
 
-# Web Drivers - URL of the zip file to download
-#$zipUrl = "https://github.com/mozilla/geckodriver/releases/download/v0.33.0/geckodriver-v0.33.0-win64.zip"
-$chromeDriver = "https://sites.google.com/a/chromium.org/chromedriver/downloads"
-#$zipUrl = "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/115.0.5790.102/win64/chrome-win64.zip"
-$zipUrl = "http://chromedriver.storage.googleapis.com/114.0.5735.90/chromedriver_win32.zip"
-$chromeEnterpriseUrl = "https://dl.google.com/edgedl/chrome/install/GoogleChromeStandaloneEnterprise64.msi"
-
-# Python
-#$pythonZip = "https://www.python.org/ftp/python/3.11.4/python-3.11.4-embed-amd64.zip"  #didnt seem to work
-$pythonInstall = "https://www.python.org/ftp/python/3.11.4/python-3.11.4-amd64.exe"
-
 # GitHub repository details
 $repoUrl = "https://github.com/dukkhadevops/myrepo/tree/master/Scripts/ScrapeAndEmail"
 $repoOwner = "dukkhadevops"
@@ -90,6 +79,14 @@ if (-not (Get-Module -Name Selenium -ListAvailable)) {
 #region Install Web Driver
 ###############################
 # Download the zip file
+
+# Web Drivers - URL of the zip file to download
+#$zipUrl = "https://github.com/mozilla/geckodriver/releases/download/v0.33.0/geckodriver-v0.33.0-win64.zip"
+#$chromeDriver = "https://sites.google.com/a/chromium.org/chromedriver/downloads"
+#$zipUrl = "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/115.0.5790.102/win64/chrome-win64.zip"
+$zipUrl = "http://chromedriver.storage.googleapis.com/114.0.5735.90/chromedriver_win32.zip"
+
+
 $msg = "Download and unzip webdriver"
 Write-Host $msg
 Write-Log $msg
@@ -112,6 +109,10 @@ Write-Log $msg
 ###############################
 #region Python install
 ###############################
+# Python
+#$pythonZip = "https://www.python.org/ftp/python/3.11.4/python-3.11.4-embed-amd64.zip"  #didnt seem to work
+$pythonInstall = "https://www.python.org/ftp/python/3.11.4/python-3.11.4-amd64.exe"
+
 # Download the zip file
 $msg = "Download and unzip python"
 Write-Host $msg
@@ -189,15 +190,69 @@ Write-Log $msg
 #endregion
 ###############################
 
-###############################
-#region Install Chrome Enterprise
-###############################
-$msg = "Downloading Chrome Enterprise version we specifically need"
-Write-Host $msg
-Write-Log $msg
+#################################
+#region Chrome madness
+# must be 114 like Chrome driver
+#################################
+#doesnt work
+#$chromeEnterpriseUrl = "https://dl.google.com/edgedl/chrome/install/GoogleChromeStandaloneEnterprise64.msi"
+#https://google-chrome.en.uptodown.com/windows/versions
 
-# Destination path to save the downloaded file
-$destinationPath = "C:\AutomatedReportDownloader\googlechromestandaloneenterprise64.msi"
+#START HERE
+#https://stackoverflow.com/questions/54927496/how-to-download-older-versions-of-chrome-from-a-google-official-site
+# TUTORIAL DOESNT SEEM TO HAVE 114
+
+#END HERE
+# https://chromium.cypress.io/
+# https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Win_x64%2F1135619%2Fchrome-win.zip?generation=1682469079864558&alt=media
+# https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Win_x64%2F1135619%2Fmini_installer.exe?generation=1682469386699488&alt=media
+
+$ChromeVersion = '114'
+
+$requestId = ([String][Guid]::NewGuid()).ToUpper()
+$sessionId = ([String][Guid]::NewGuid()).ToUpper()
+
+$xml = @"
+<?xml version="1.0" encoding="UTF-8"?>
+<request protocol="3.0" updater="Omaha" sessionid="{$sessionId}"
+    installsource="update3web-ondemand" requestid="{$requestId}">
+    <os platform="win" version="10.0" arch="x64" />
+    <app appid="{8A69D345-D564-463C-AFF1-A69D9E530F96}" version="5.0.375"
+        ap="x64-stable-statsdef_0" lang="" brand="GCEB">
+        <updatecheck targetversionprefix="$ChromeVersion"/>
+    </app>
+</request>
+"@
+
+$webRequest = @{
+    Method    = 'Post'
+    Uri       = 'https://tools.google.com/service/update2'
+    Headers   = @{
+        'Content-Type' = 'application/x-www-form-urlencoded'
+        'X-Goog-Update-Interactivity' = 'fg'
+    }
+    Body      = $Xml
+}
+
+$result = Invoke-WebRequest @webRequest -UseBasicParsing
+$contentXml = [xml]$result.Content
+$status = $contentXml.response.app.updatecheck.status
+if ($status -eq 'ok') {
+    $package = $contentXml.response.app.updatecheck.manifest.packages.package
+    $urls = $contentXml.response.app.updatecheck.urls.url | ForEach-Object { $_.codebase + $package.name }
+    Write-Output "--- Chrome Windows 64-bit found. Hash=$($package.hash) Hash_sha256=$($package.hash_sha256)). ---"
+    Write-Output $urls
+}
+else {
+    Write-Output "Chrome not found (status: $status)"
+}
+
+#this outputs something like this - http://dl.google.com/release2/chrome/dcrhyd6kdj5w7yk3dxqr6xuwda_114.0.5735.199/114.0.5735.199_chrome_installer.exe
+
+#now that we have a download link. download it a put it somewhere
+$urls[0]
+
+$destinationPath = "C:\AutomatedReportDownloader\chrome114.exe"
 #set a better named variable for later use
 $chromeInstaller = $destinationPath
 
@@ -205,7 +260,7 @@ $chromeInstaller = $destinationPath
 $webClient = New-Object System.Net.WebClient
 
 # Download the file
-$webClient.DownloadFile($chromeEnterpriseUrl, $destinationPath)
+$webClient.DownloadFile($urls[0], $destinationPath)
 
 # Check if the download was successful
 if (Test-Path $destinationPath) {
@@ -218,16 +273,15 @@ if (Test-Path $destinationPath) {
 }
 
 # Define the installation parameters for a verbose installation log
+$installChromeHere = Join-Path $whereToInstall "chrome114"
+
 $installParams = @{
-    FilePath = "msiexec.exe"
+    FilePath = $chromeInstaller
     PassThru = $true
     Wait = $true
     ArgumentList = @(
-        "/i", $chromeInstaller,  # Specify the MSI file
-        "/qn",                   # Quiet mode (no UI)
-        "/norestart",            # Do not restart after installation
-        "/log",                  # Log installation progress
-        "C:\chrome_install.log"  # Path to the installation log file
+        "/S",                    # Silent installation
+        "/D=$installChromeHere"     # Specify the installation directory
     )
 }
 
@@ -242,6 +296,76 @@ if ($LASTEXITCODE -eq 0) {
     Write-Host "Google Chrome installation failed with exit code $LASTEXITCODE."
     Write-Log "Google Chrome installation failed with exit code $LASTEXITCODE."
 }
+
+# Wait for some time to ensure that the installation is complete
+Start-Sleep -Seconds 10
+
+# Find and close any running instances of Chrome
+$chromeProcesses = Get-Process -Name chrome -ErrorAction SilentlyContinue
+if ($chromeProcesses) {
+    foreach ($process in $chromeProcesses) {
+        $process | Stop-Process -Force
+    }
+}
+
+#################################
+#endregion
+#################################
+
+
+###############################
+#region Install Chrome Enterprise DEPRECATED FOR NOW
+###############################
+# $msg = "Downloading Chrome Enterprise version we specifically need"
+# Write-Host $msg
+# Write-Log $msg
+
+# # Destination path to save the downloaded file
+# $destinationPath = "C:\AutomatedReportDownloader\googlechromestandaloneenterprise64.msi"
+# #set a better named variable for later use
+# $chromeInstaller = $destinationPath
+
+# # Create a WebClient object to download the file
+# $webClient = New-Object System.Net.WebClient
+
+# # Download the file
+# $webClient.DownloadFile($chromeEnterpriseUrl, $destinationPath)
+
+# # Check if the download was successful
+# if (Test-Path $destinationPath) {
+#     $msg = "File downloaded successfully to $destinationPath"
+#     Write-Host $msg
+#     Write-Log $msg
+# } else {
+#     Write-Host "Download failed."
+#     Write-Log "Download failed."
+# }
+
+# # Define the installation parameters for a verbose installation log
+# $installParams = @{
+#     FilePath = "msiexec.exe"
+#     PassThru = $true
+#     Wait = $true
+#     ArgumentList = @(
+#         "/i", $chromeInstaller,  # Specify the MSI file
+#         "/qn",                   # Quiet mode (no UI)
+#         "/norestart",            # Do not restart after installation
+#         "/log",                  # Log installation progress
+#         "C:\chrome_install.log"  # Path to the installation log file
+#     )
+# }
+
+# # Install Google Chrome silently with verbose logging
+# Start-Process @installParams -Verbose
+
+# # Check the exit code to verify the installation status
+# if ($LASTEXITCODE -eq 0) {
+#     Write-Host "Google Chrome installed successfully."
+#     Write-Log "Google Chrome installed successfully."
+# } else {
+#     Write-Host "Google Chrome installation failed with exit code $LASTEXITCODE."
+#     Write-Log "Google Chrome installation failed with exit code $LASTEXITCODE."
+# }
 
 ###############################
 #endregion
