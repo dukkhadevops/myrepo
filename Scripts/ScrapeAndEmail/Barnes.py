@@ -1,5 +1,52 @@
-#pip install selenium
-#pip install selenium-stealth
+#########################
+#region install packages to import selenium
+##########################
+import subprocess
+
+# Define the package name you want to install
+package_name1 = 'selenium'
+package_name2 = 'selenium_stealth'
+
+#package1
+try:
+    # Use subprocess to run the 'pip install' command
+    subprocess.check_call(['pip', 'install', package_name1])
+
+    # Print a message indicating successful installation
+    print(f'Successfully installed {package_name1}')
+
+except subprocess.CalledProcessError as e:
+    # Handle any installation errors
+    print(f'Error: Failed to install {package_name1}. Details: {e}')
+
+except Exception as e:
+    # Handle other exceptions
+    print(f'An error occurred: {e}')
+
+#package2
+try:
+    # Use subprocess to run the 'pip install' command
+    subprocess.check_call(['pip', 'install', package_name2])
+
+    # Print a message indicating successful installation
+    print(f'Successfully installed {package_name2}')
+
+except subprocess.CalledProcessError as e:
+    # Handle any installation errors
+    print(f'Error: Failed to install {package_name2}. Details: {e}')
+
+except Exception as e:
+    # Handle other exceptions
+    print(f'An error occurred: {e}')
+
+#########################
+#endregion
+#########################
+
+##
+# Disable Chrome updates after its installed
+# https://www.chromium.org/administrators/turning-off-auto-updates/
+##
 
 from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
